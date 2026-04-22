@@ -427,14 +427,7 @@ footer {
           <div class="messenger-status">Active now</div>
         </div>
       </div>
-      <div class="messenger-body">
-        <div class="bubble bubble-in">Hi! Is the blue linen dress in stock?</div>
-        <div class="bubble bubble-out">
-          Yes — sizes S, M, L are in stock. Want me to reserve one?
-          <div class="bubble-meta">Replied in 1.2s · KiwKiw AI</div>
-        </div>
-        <div class="bubble bubble-in" style="max-width:60%">Size M please 🙏</div>
-      </div>
+      <div class="messenger-body" id="messenger-body"></div>
     </div>
 
     <!-- Dashboard mock -->
@@ -676,6 +669,154 @@ footer {
     <a href="https://portal.kiwkiw-parrot.com/en/auth" class="footer-link">Log in</a>
   </div>
 </footer>
+
+<style>
+/* ── Streaming animation ── */
+.bubble-caret {
+  display: inline-block; width: 2px; height: 1em;
+  background: #fff; vertical-align: -2px; margin-left: 1px;
+  animation: cur-blink 1s steps(2) infinite;
+}
+@keyframes cur-blink { 50% { opacity: 0; } }
+
+.thinking-dots {
+  display: inline-flex; gap: 3px; align-items: center;
+  padding: 2px 0;
+}
+.thinking-dots i {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(255,255,255,.6);
+  display: inline-block;
+  animation: dot-bob 1s infinite ease-in-out;
+}
+.thinking-dots i:nth-child(2) { animation-delay: .15s; }
+.thinking-dots i:nth-child(3) { animation-delay: .30s; }
+@keyframes dot-bob {
+  0%,80%,100% { opacity: .3; transform: translateY(0); }
+  40%          { opacity: 1;  transform: translateY(-3px); }
+}
+
+.bubble-fade-in {
+  animation: bubble-appear .2s ease forwards;
+}
+@keyframes bubble-appear {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+<script>
+/* ── Messenger streaming loop ── */
+(function () {
+  const body = document.getElementById('messenger-body');
+  if (!body) return;
+
+  const conversations = [
+    {
+      user1: "Hi! Is the blue linen dress in stock?",
+      bot1:  "Yes — sizes S, M, L are in stock. Want me to reserve one?",
+      meta1: "Replied in 1.2s · KiwKiw AI",
+      user2: "Size M please 🙏",
+      bot2:  "Reserved! We'll hold it for 24 hours. Shall I send you the payment link?",
+      meta2: "Replied in 0.9s · KiwKiw AI",
+    },
+    {
+      user1: "What time do you close today?",
+      bot1:  "We're open until 9 PM today. Need help with anything else?",
+      meta1: "Replied in 0.8s · KiwKiw AI",
+      user2: "Do you do gift wrapping?",
+      bot2:  "Yes! Free gift wrapping on all orders over 500K kip. Want to add it?",
+      meta2: "Replied in 1.1s · KiwKiw AI",
+    },
+  ];
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  function makeBubble(cls, extra) {
+    const d = document.createElement('div');
+    d.className = 'bubble ' + cls + ' bubble-fade-in';
+    if (extra) Object.assign(d.style, extra);
+    return d;
+  }
+
+  async function typewrite(el, text, speed = 22) {
+    const span = document.createElement('span');
+    const caret = document.createElement('span');
+    caret.className = 'bubble-caret';
+    el.append(span, caret);
+    for (let i = 0; i < text.length; i++) {
+      span.textContent = text.slice(0, i + 1);
+      const ch = text[i];
+      let d = speed + Math.random() * 18;
+      if ('.,;:!?'.includes(ch)) d += 110;
+      if (ch === ' ') d = speed * 0.6;
+      await sleep(d);
+    }
+    await sleep(300);
+    caret.remove();
+  }
+
+  async function showThinking(el) {
+    const dots = document.createElement('span');
+    dots.className = 'thinking-dots';
+    dots.innerHTML = '<i></i><i></i><i></i>';
+    el.appendChild(dots);
+    await sleep(900 + Math.random() * 300);
+    dots.remove();
+  }
+
+  async function runConversation(conv) {
+    body.innerHTML = '';
+
+    // Turn 1 — user message
+    const u1 = makeBubble('bubble-in');
+    u1.textContent = conv.user1;
+    body.appendChild(u1);
+    await sleep(600);
+
+    // Turn 1 — AI thinking + stream
+    const b1 = makeBubble('bubble-out');
+    body.appendChild(b1);
+    await showThinking(b1);
+    await typewrite(b1, conv.bot1);
+    const m1 = document.createElement('div');
+    m1.className = 'bubble-meta';
+    m1.textContent = conv.meta1;
+    b1.appendChild(m1);
+    await sleep(1000);
+
+    // Turn 2 — user message
+    const u2 = makeBubble('bubble-in', { maxWidth: '70%' });
+    u2.textContent = conv.user2;
+    body.appendChild(u2);
+    body.scrollTop = body.scrollHeight;
+    await sleep(600);
+
+    // Turn 2 — AI thinking + stream
+    const b2 = makeBubble('bubble-out');
+    body.appendChild(b2);
+    body.scrollTop = body.scrollHeight;
+    await showThinking(b2);
+    await typewrite(b2, conv.bot2);
+    const m2 = document.createElement('div');
+    m2.className = 'bubble-meta';
+    m2.textContent = conv.meta2;
+    b2.appendChild(m2);
+
+    await sleep(2800);
+  }
+
+  async function loop() {
+    let i = 0;
+    while (true) {
+      await runConversation(conversations[i % conversations.length]);
+      i++;
+    }
+  }
+
+  loop();
+})();
+</script>
 
 <script>
 function toggleFaq(btn) {
