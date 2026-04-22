@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KiwKiw — Never miss a customer message again</title>
+<meta name="description" content="KiwKiw replies to your Facebook messages in under 2 seconds with AI trained on your business. Close more sales, scale support, and hire zero new staff." />
+<link rel="icon" href="/assets/logo.png" />
+<style>
+/* ── Fonts ── */
+@font-face { font-family:"NotoLao"; font-weight:400; src:url("/fonts/NotoSansLaoLooped-Regular.ttf") format("truetype"); }
+@font-face { font-family:"NotoLao"; font-weight:500; src:url("/fonts/NotoSansLaoLooped-Medium.ttf") format("truetype"); }
+@font-face { font-family:"NotoLao"; font-weight:600; src:url("/fonts/NotoSansLaoLooped-SemiBold.ttf") format("truetype"); }
+@font-face { font-family:"NotoLao"; font-weight:700; src:url("/fonts/NotoSansLaoLooped-Bold.ttf") format("truetype"); }
+
+/* ── Reset & base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "NotoLao", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+  color: #161616;
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+
+/* ── Tokens ── */
+:root {
+  --ink:    #0F2A3A;
+  --teal:   #1F7A8C;
+  --green:  #2C9E6A;
+  --orange: #E2833B;
+  --red:    #D74B3E;
+  --cream:  #F2EEE3;
+  --primary:#cacaff;
+  --pfg:    #27278f;
+  --fg1:    #161616;
+  --fg2:    #4A4A4A;
+  --fg3:    #939393;
+  --border: #EDEDED;
+  --card:   #F7F7F7;
+  --detail: #FCFCFC;
+  --radius: 10px;
+  --shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+
+/* ── Layout helpers ── */
+.container { max-width: 1120px; margin: 0 auto; }
+.section    { padding: 96px 40px; }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-weight: 600; border: none; border-radius: var(--radius);
+  cursor: pointer; transition: opacity .15s; white-space: nowrap;
+  text-decoration: none;
+}
+.btn-primary  { background: var(--ink);     color: #fff; }
+.btn-secondary{ background: var(--primary); color: var(--pfg); }
+.btn-ghost    { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+.btn-lg  { height: 52px; padding: 0 24px; font-size: 16px; }
+.btn-xl  { height: 60px; padding: 0 32px; font-size: 17px; }
+.btn:hover { opacity: .88; }
+
+/* ── Eyebrow ── */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 500; letter-spacing: .04em;
+  text-transform: uppercase; border-radius: 999px;
+  padding: 6px 10px; margin-bottom: 18px;
+}
+
+/* ──────────────────────────────────────────
+   NAV
+────────────────────────────────────────── */
+nav {
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(255,255,255,.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-brand { display: flex; align-items: center; gap: 10px; }
+.nav-brand span { font-size: 18px; font-weight: 700; }
+.nav-login { font-size: 14px; font-weight: 500; color: var(--fg1); }
+
+/* ──────────────────────────────────────────
+   HERO
+────────────────────────────────────────── */
+.hero {
+  padding: 72px 40px 48px;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 48px;
+  align-items: center;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+.hero h1 {
+  font-size: 60px; font-weight: 700;
+  line-height: 1.02; letter-spacing: -0.02em;
+  color: var(--fg1);
+}
+.hero h1 .accent { color: var(--teal); }
+.hero-sub {
+  font-size: 19px; line-height: 1.5; color: var(--fg2);
+  margin-top: 20px; max-width: 500px;
+}
+.hero-ctas { display: flex; align-items: center; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+.hero-stats { display: flex; flex-wrap: wrap; gap: 28px; margin-top: 32px; }
+.hero-stat-n { font-size: 22px; font-weight: 700; color: var(--ink); }
+.hero-stat-l { font-size: 13px; color: var(--fg3); }
+
+/* Hero visual */
+.hero-visual { position: relative; height: 540px; }
+
+.messenger-mock {
+  position: absolute; top: 0; left: 0; width: 280px;
+  background: #fff; border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.12);
+  border: 1px solid var(--border); overflow: hidden; z-index: 2;
+}
+.messenger-header {
+  background: #0084FF; color: #fff;
+  padding: 12px 14px; display: flex; align-items: center; gap: 10px;
+}
+.messenger-avatar {
+  width: 32px; height: 32px; border-radius: 999px;
+  background: #fff; overflow: hidden; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.messenger-avatar img { width: 28px; height: 28px; }
+.messenger-name { font-size: 13px; font-weight: 600; }
+.messenger-status { font-size: 11px; opacity: .85; }
+.messenger-body {
+  padding: 14px; display: flex; flex-direction: column; gap: 8px;
+  background: var(--card); min-height: 240px;
+}
+.bubble {
+  padding: 8px 12px; font-size: 13px; max-width: 75%;
+}
+.bubble-in {
+  align-self: flex-start;
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 16px 16px 16px 4px;
+}
+.bubble-out {
+  align-self: flex-end;
+  background: #0084FF; color: #fff;
+  border-radius: 16px 16px 4px 16px;
+}
+.bubble-meta { font-size: 10px; opacity: .8; margin-top: 4px; }
+
+.dashboard-mock {
+  position: absolute; bottom: 0; right: 0; width: 380px;
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 14px; box-shadow: 0 24px 60px rgba(0,0,0,.10);
+  overflow: hidden;
+}
+.dash-header {
+  padding: 14px 16px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.dash-title { font-size: 14px; font-weight: 600; }
+.dash-live   { font-size: 11px; color: var(--green); font-weight: 500; }
+.dash-stats  { padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat-card   { border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+.stat-label  { font-size: 11px; color: var(--fg3); text-transform: uppercase; letter-spacing: .08em; }
+.stat-val    { font-size: 22px; font-weight: 700; color: var(--fg1); margin-top: 2px; }
+.stat-delta  { font-size: 11px; color: var(--green); }
+.dash-replies{ padding: 0 16px 16px; }
+.dash-sub    { font-size: 11px; color: var(--fg3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; font-weight: 500; }
+.reply-row   {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0; border-top: 1px solid #F4F4F4; font-size: 13px;
+}
+.reply-who  { color: var(--fg2); }
+.reply-time { color: var(--green); font-family: ui-monospace, monospace; font-size: 11px; }
+
+.powered-badge {
+  position: absolute; top: 180px; right: 40px; z-index: 3;
+  background: var(--cream); border: 1px solid rgba(15,42,58,.1);
+  border-radius: 999px; padding: 8px 14px 8px 10px;
+  display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.08);
+  font-size: 12px; font-weight: 600; color: var(--ink);
+}
+.powered-badge img { width: 24px; height: 24px; }
+
+/* ──────────────────────────────────────────
+   PROBLEM / SOLUTION
+────────────────────────────────────────── */
+.problem-section {
+  padding: 96px 40px;
+  background: var(--detail);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.problem-grid {
+  max-width: 1120px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+}
+.problem-eyebrow { font-size: 13px; font-weight: 500; color: var(--red); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 12px; }
+.problem-h2 { font-size: 40px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.1; color: var(--fg1); }
+.problem-list { margin-top: 28px; display: flex; flex-direction: column; gap: 14px; }
+.problem-item { display: flex; gap: 14px; align-items: flex-start; }
+.problem-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: #fff; border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; color: var(--red);
+}
+.problem-icon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.problem-title { font-size: 15px; font-weight: 600; color: var(--fg1); }
+.problem-body  { font-size: 14px; color: var(--fg2); line-height: 1.5; margin-top: 2px; }
+.problem-quote { margin-top: 24px; font-size: 15px; font-weight: 600; color: var(--ink); border-left: 3px solid var(--orange); padding-left: 12px; }
+
+.solution-card {
+  background: var(--ink); color: #fff;
+  border-radius: 20px; padding: 40px;
+  position: relative; overflow: hidden;
+}
+.solution-card .bg-logo {
+  position: absolute; right: -40px; bottom: -40px; width: 280px; opacity: .15;
+}
+.solution-inner { position: relative; }
+.solution-eyebrow { font-size: 12px; font-weight: 500; color: var(--primary); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
+.solution-h { font-size: 32px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.15; }
+.solution-body { font-size: 16px; line-height: 1.55; color: rgba(255,255,255,.8); margin-top: 16px; }
+.solution-list { list-style: none; margin: 20px 0 28px; display: flex; flex-direction: column; gap: 10px; }
+.solution-list li { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.solution-list svg { width: 16px; height: 16px; stroke: var(--green); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+/* ──────────────────────────────────────────
+   BENEFITS
+────────────────────────────────────────── */
+.benefits-section { padding: 96px 40px; }
+.benefits-header  { text-align: center; margin-bottom: 48px; }
+.section-eyebrow  { font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; color: var(--pfg); }
+.section-h2 { font-size: 44px; font-weight: 700; letter-spacing: -0.02em; color: var(--fg1); }
+.benefits-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.benefit-card {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 14px; padding: 24px;
+}
+.benefit-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 16px;
+}
+.benefit-icon svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.benefit-title { font-size: 17px; font-weight: 600; color: var(--fg1); margin-bottom: 6px; }
+.benefit-body  { font-size: 14px; color: var(--fg2); line-height: 1.5; }
+
+/* ──────────────────────────────────────────
+   HOW IT WORKS
+────────────────────────────────────────── */
+.how-section { padding: 96px 40px; background: var(--cream); }
+.how-header  { text-align: center; margin-bottom: 56px; }
+.how-eyebrow { font-size: 13px; font-weight: 500; color: var(--ink); opacity: .7; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
+.how-h2 { font-size: 44px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+.how-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+.how-card {
+  background: #fff; border-radius: 14px; padding: 28px;
+  position: relative; box-shadow: 0 4px 12px rgba(15,42,58,.06);
+}
+.how-num {
+  position: absolute; top: -16px; left: 28px;
+  background: var(--ink); color: #fff;
+  width: 36px; height: 36px; border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 700;
+}
+.how-icon { color: var(--teal); margin-top: 16px; margin-bottom: 14px; }
+.how-icon svg { width: 28px; height: 28px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.how-title { font-size: 18px; font-weight: 700; color: var(--ink); }
+.how-body  { font-size: 14px; color: var(--fg2); line-height: 1.55; margin-top: 6px; }
+.how-cta   { text-align: center; margin-top: 40px; }
+
+/* ──────────────────────────────────────────
+   SOCIAL PROOF
+────────────────────────────────────────── */
+.proof-section { padding: 96px 40px; background: #fff; }
+.proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.proof-card {
+  border: 1px solid var(--border); border-radius: 14px; padding: 28px;
+  display: flex; flex-direction: column; gap: 18px; background: var(--detail);
+}
+.proof-quote-mark { font-size: 26px; font-weight: 700; line-height: 1; }
+.proof-text  { font-size: 16px; color: var(--fg1); line-height: 1.5; }
+.proof-pill  { display: inline-flex; align-self: flex-start; background: var(--primary); color: var(--pfg); padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+.proof-author { display: flex; align-items: center; gap: 10px; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--border); }
+.proof-avatar { width: 40px; height: 40px; border-radius: 999px; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+.proof-name  { font-size: 14px; font-weight: 600; color: var(--fg1); }
+.proof-role  { font-size: 12px; color: var(--fg3); }
+
+/* ──────────────────────────────────────────
+   FAQ
+────────────────────────────────────────── */
+.faq-section { padding: 96px 40px; background: var(--detail); }
+.faq-inner   { max-width: 780px; margin: 0 auto; }
+.faq-header  { text-align: center; margin-bottom: 40px; }
+.faq-h2 { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; color: var(--fg1); }
+.faq-list { display: flex; flex-direction: column; gap: 10px; }
+.faq-item { background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.faq-btn {
+  width: 100%; text-align: left; padding: 18px 20px;
+  background: transparent; border: none;
+  font-size: 16px; font-weight: 600; color: var(--fg1);
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+}
+.faq-btn svg { width: 20px; height: 20px; stroke: var(--fg3); fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
+.faq-answer { padding: 0 20px 18px; font-size: 15px; line-height: 1.55; color: var(--fg2); display: none; }
+.faq-item.open .faq-answer { display: block; }
+
+/* ──────────────────────────────────────────
+   FINAL CTA
+────────────────────────────────────────── */
+.cta-section {
+  padding: 96px 40px; background: var(--ink); color: #fff;
+  position: relative; overflow: hidden; text-align: center;
+}
+.cta-section .bg-logo {
+  position: absolute; right: -80px; top: 50%; transform: translateY(-50%);
+  width: 440px; opacity: .15; pointer-events: none;
+}
+.cta-inner { max-width: 760px; margin: 0 auto; position: relative; }
+.cta-h2 { font-size: 52px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.08; }
+.cta-sub { font-size: 18px; color: rgba(255,255,255,.8); margin-top: 18px; line-height: 1.5; }
+.cta-btns { margin-top: 32px; display: flex; gap: 12px; justify-content: center; }
+.cta-fine { margin-top: 18px; font-size: 13px; color: rgba(255,255,255,.65); }
+
+/* ──────────────────────────────────────────
+   FOOTER
+────────────────────────────────────────── */
+footer {
+  padding: 48px 40px 32px;
+  background: #161A1F; color: rgba(255,255,255,.7);
+}
+.footer-grid {
+  max-width: 1120px; margin: 0 auto;
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+}
+.footer-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.footer-brand span { font-size: 18px; font-weight: 700; color: #fff; }
+.footer-brand img { width: 32px; height: 32px; }
+.footer-desc { font-size: 13px; line-height: 1.55; max-width: 320px; }
+.footer-col-h { font-size: 12px; font-weight: 600; color: #fff; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 12px; }
+.footer-link  { display: block; font-size: 13px; padding: 6px 0; color: rgba(255,255,255,.7); }
+.footer-link:hover { color: #fff; }
+.footer-bottom {
+  max-width: 1120px; margin: 32px auto 0; padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  display: flex; justify-content: space-between; font-size: 12px;
+}
+
+/* ──────────────────────────────────────────
+   RESPONSIVE (basic)
+────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .hero, .problem-grid { grid-template-columns: 1fr; }
+  .hero-visual { display: none; }
+  .hero h1 { font-size: 40px; }
+  .benefits-grid, .how-grid, .proof-grid { grid-template-columns: 1fr 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  nav, .hero, .section, .problem-section, .benefits-section,
+  .how-section, .proof-section, .faq-section, .cta-section, footer { padding-left: 20px; padding-right: 20px; }
+  .benefits-grid, .how-grid, .proof-grid { grid-template-columns: 1fr; }
+  .cta-h2 { font-size: 34px; }
+  .hero h1 { font-size: 36px; }
+  .section-h2, .faq-h2, .how-h2 { font-size: 30px; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <img src="/assets/logo.png" alt="KiwKiw" width="32" height="32" />
+    <span>KiwKiw</span>
+  </div>
+  <a href="https://portal.kiwkiw-parrot.com/en/auth" class="nav-login">Log in</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <div class="eyebrow" style="background:var(--primary);color:var(--pfg);">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8H20l-5 3.7 1.9 5.8L12 15l-4.9 3.3L9 12.5 4 8.8h6.1z"/></svg>
+      AI for Messenger
+    </div>
+    <h1>Never miss a customer<br><span class="accent">message</span> again.</h1>
+    <p class="hero-sub">KiwKiw replies to your Facebook messages in under 2 seconds with AI trained on your business. Close more sales, scale support, and hire zero new staff.</p>
+    <div class="hero-ctas">
+      <a href="https://portal.kiwkiw-parrot.com/en/auth" class="btn btn-primary btn-xl">
+        Automate My Messages
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <button class="btn btn-ghost btn-xl">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+        Watch demo
+      </button>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hero-stat-n">500+</div><div class="hero-stat-l">businesses across SEA</div></div>
+      <div><div class="hero-stat-n">50,000+</div><div class="hero-stat-l">messages handled daily</div></div>
+      <div><div class="hero-stat-n">&lt;2s</div><div class="hero-stat-l">avg. response time</div></div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <!-- Messenger mock -->
+    <div class="messenger-mock">
+      <div class="messenger-header">
+        <div class="messenger-avatar"><img src="/assets/logo.png" alt="" /></div>
+        <div>
+          <div class="messenger-name">Lina's Boutique</div>
+          <div class="messenger-status">Active now</div>
+        </div>
+      </div>
+      <div class="messenger-body">
+        <div class="bubble bubble-in">Hi! Is the blue linen dress in stock?</div>
+        <div class="bubble bubble-out">
+          Yes — sizes S, M, L are in stock. Want me to reserve one?
+          <div class="bubble-meta">Replied in 1.2s · KiwKiw AI</div>
+        </div>
+        <div class="bubble bubble-in" style="max-width:60%">Size M please 🙏</div>
+      </div>
+    </div>
+
+    <!-- Dashboard mock -->
+    <div class="dashboard-mock">
+      <div class="dash-header">
+        <div class="dash-title">Today's activity</div>
+        <div class="dash-live">● Live</div>
+      </div>
+      <div class="dash-stats">
+        <div class="stat-card"><div class="stat-label">Messages</div><div class="stat-val">1,284</div><div class="stat-delta">▲ +18%</div></div>
+        <div class="stat-card"><div class="stat-label">Resolved by AI</div><div class="stat-val">92%</div><div class="stat-delta">▲ +3%</div></div>
+      </div>
+      <div class="dash-replies">
+        <div class="dash-sub">Latest auto-replies</div>
+        <div class="reply-row"><span class="reply-who">Maya · price question</span><span class="reply-time">1.2s</span></div>
+        <div class="reply-row"><span class="reply-who">Tom · opening hours</span><span class="reply-time">0.9s</span></div>
+        <div class="reply-row"><span class="reply-who">Sua · returns policy</span><span class="reply-time">1.5s</span></div>
+      </div>
+    </div>
+
+    <!-- Badge -->
+    <div class="powered-badge">
+      <img src="/assets/logo.png" alt="" />
+      Powered by KiwKiw AI
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEM / SOLUTION -->
+<div class="problem-section">
+  <div class="problem-grid">
+    <div>
+      <div class="problem-eyebrow">The problem</div>
+      <h2 class="problem-h2">Customer messages are costing you sales.</h2>
+      <div class="problem-list">
+        <div class="problem-item">
+          <div class="problem-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div><div class="problem-title">You reply too late</div><div class="problem-body">Customers don't wait — they message three competitors at once.</div></div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-icon"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></div>
+          <div><div class="problem-title">Your team repeats answers</div><div class="problem-body">Price, sizing, hours, shipping — the same questions, every day.</div></div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-icon"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></div>
+          <div><div class="problem-title">You miss messages at night</div><div class="problem-body">Leads go cold between 10pm and 8am. SEA sleeps; Messenger doesn't.</div></div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+          <div><div class="problem-title">Scaling means hiring</div><div class="problem-body">More volume means more agents. Payroll climbs faster than margin.</div></div>
+        </div>
+      </div>
+      <p class="problem-quote">Every missed message is a lost opportunity.</p>
+    </div>
+
+    <div class="solution-card">
+      <img class="bg-logo" src="/assets/logo.png" alt="" />
+      <div class="solution-inner">
+        <div class="solution-eyebrow">The solution</div>
+        <div class="solution-h">Meet KiwKiw — your AI chat assistant.</div>
+        <p class="solution-body">KiwKiw automatically replies to your customer messages using AI trained on your business. It answers FAQs, handles inquiries, and turns conversations into sales — 24/7.</p>
+        <ul class="solution-list">
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>No coding</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>No complex setup</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Works on your Facebook Page in under 5 minutes</li>
+        </ul>
+        <a href="https://portal.kiwkiw-parrot.com/en/auth" class="btn btn-secondary btn-lg">
+          Automate My Messages
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BENEFITS -->
+<div class="benefits-section">
+  <div class="container">
+    <div class="benefits-header">
+      <div class="section-eyebrow">Benefits</div>
+      <h2 class="section-h2">Turn conversations into conversions.</h2>
+    </div>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon" style="background:#1F7A8C18;color:#1F7A8C"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <div class="benefit-title">Reply instantly, 24/7</div>
+        <div class="benefit-body">Your customers get answers in seconds — even when you're offline.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon" style="background:#2C9E6A18;color:#2C9E6A"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+        <div class="benefit-title">Convert more leads</div>
+        <div class="benefit-body">Respond faster and never miss a potential buyer again.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon" style="background:#E2833B18;color:#E2833B"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+        <div class="benefit-title">Reduce support workload</div>
+        <div class="benefit-body">Let AI handle repetitive questions so your team focuses on what matters.</div>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon" style="background:#53278818;color:#532788"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+        <div class="benefit-title">Scale without hiring</div>
+        <div class="benefit-body">Handle 10× more conversations without increasing headcount.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="how-section">
+  <div class="container">
+    <div class="how-header">
+      <div class="how-eyebrow">How it works</div>
+      <h2 class="how-h2">Get started in minutes.</h2>
+    </div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">1</div>
+        <div class="how-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></div>
+        <div class="how-title">Connect your Messenger</div>
+        <div class="how-body">Link your Facebook page in one click via Meta OAuth.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">2</div>
+        <div class="how-icon"><svg viewBox="0 0 24 24"><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/><circle cx="12" cy="12" r="10"/></svg></div>
+        <div class="how-title">Train your AI</div>
+        <div class="how-body">Add FAQs, product info, or let KiwKiw learn from past chats.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">3</div>
+        <div class="how-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <div class="how-title">Go live instantly</div>
+        <div class="how-body">KiwKiw starts replying to customers automatically.</div>
+      </div>
+    </div>
+    <div class="how-cta">
+      <a href="https://portal.kiwkiw-parrot.com/en/auth" class="btn btn-primary btn-xl">
+        Connect My Messenger
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- SOCIAL PROOF -->
+<div class="proof-section">
+  <div class="container">
+    <div class="benefits-header">
+      <div class="section-eyebrow">Social proof</div>
+      <h2 class="section-h2">Businesses are already growing with KiwKiw.</h2>
+    </div>
+    <div class="proof-grid">
+      <div class="proof-card">
+        <div class="proof-quote-mark" style="color:#1F7A8C">&ldquo;</div>
+        <p class="proof-text">KiwKiw replies instantly. Sales went up 30% just from faster responses.</p>
+        <div class="proof-pill">+30% response rate</div>
+        <div class="proof-author">
+          <div class="proof-avatar" style="background:#1F7A8C">L</div>
+          <div><div class="proof-name">Lina Souphanouvong</div><div class="proof-role">Owner, Lina's Boutique</div></div>
+        </div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-quote-mark" style="color:#E2833B">&ldquo;</div>
+        <p class="proof-text">We manage 40 client pages. KiwKiw saves us hours every day. Like having an extra team.</p>
+        <div class="proof-pill">40 pages · 1 ops person</div>
+        <div class="proof-author">
+          <div class="proof-avatar" style="background:#E2833B">M</div>
+          <div><div class="proof-name">Mark Tanabuth</div><div class="proof-role">Director, Parrot Digital</div></div>
+        </div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-quote-mark" style="color:#2C9E6A">&ldquo;</div>
+        <p class="proof-text">Before KiwKiw we missed messages nightly. Now every inquiry is handled, even at 3am.</p>
+        <div class="proof-pill">0 missed messages</div>
+        <div class="proof-author">
+          <div class="proof-avatar" style="background:#2C9E6A">S</div>
+          <div><div class="proof-name">Somchai Phommasone</div><div class="proof-role">Founder, Saffron Mart</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="faq-section">
+  <div class="faq-inner">
+    <div class="faq-header">
+      <div class="section-eyebrow">FAQ</div>
+      <h2 class="faq-h2">Frequently asked questions.</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item open">
+        <button class="faq-btn" onclick="toggleFaq(this)">
+          Is it hard to set up?
+          <svg class="faq-icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-answer">Not at all. Connect your Messenger and start automating in a few minutes — no code required.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn" onclick="toggleFaq(this)">
+          Will the AI answer correctly?
+          <svg class="faq-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-answer">Yes. You control the knowledge it uses, approve its replies during training, and can update responses anytime.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn" onclick="toggleFaq(this)">
+          Is it expensive?
+          <svg class="faq-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-answer">KiwKiw is built for SMEs. Plans start low and scale with message volume, not headcount.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn" onclick="toggleFaq(this)">
+          Will it replace my team?
+          <svg class="faq-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-answer">No. It supports your team by handling repetitive questions so they can focus on high-value conversations.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-btn" onclick="toggleFaq(this)">
+          Is my data secure?
+          <svg class="faq-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-answer">Yes. We use encryption in transit and at rest, store Meta credentials securely, and never train on your data outside your tenant.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FINAL CTA -->
+<div class="cta-section">
+  <img class="bg-logo" src="/assets/logo.png" alt="" />
+  <div class="cta-inner">
+    <h2 class="cta-h2">Start automating your customer conversations today.</h2>
+    <p class="cta-sub">Join hundreds of businesses using KiwKiw to respond faster and sell more.</p>
+    <div class="cta-btns">
+      <a href="https://portal.kiwkiw-parrot.com/en/auth" class="btn btn-secondary btn-xl">
+        Automate My Messages Now
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+    <div class="cta-fine">Free trial · No technical setup required · Cancel anytime</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand">
+        <img src="/assets/logo.png" alt="KiwKiw" />
+        <span>KiwKiw</span>
+      </div>
+      <p class="footer-desc">AI-powered Messenger automation for SMEs and agencies across Southeast Asia.</p>
+    </div>
+    <div>
+      <div class="footer-col-h">Product</div>
+      <a href="#" class="footer-link">Features</a>
+      <a href="#" class="footer-link">Pricing</a>
+      <a href="#" class="footer-link">Changelog</a>
+    </div>
+    <div>
+      <div class="footer-col-h">Company</div>
+      <a href="#" class="footer-link">About</a>
+      <a href="#" class="footer-link">Contact</a>
+      <a href="#" class="footer-link">Careers</a>
+    </div>
+    <div>
+      <div class="footer-col-h">Legal</div>
+      <a href="https://portal.kiwkiw-parrot.com/en/privacy-policy" class="footer-link">Privacy Policy</a>
+      <a href="https://portal.kiwkiw-parrot.com/en/terms-of-service" class="footer-link">Terms of Service</a>
+      <a href="https://portal.kiwkiw-parrot.com/en/data-deletion" class="footer-link">Data Deletion</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 KiwKiw. Operated by Reddus Experience Sole Co., Ltd.</span>
+    <a href="https://portal.kiwkiw-parrot.com/en/auth" class="footer-link">Log in</a>
+  </div>
+</footer>
+
+<script>
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  // close all
+  document.querySelectorAll('.faq-item').forEach(el => {
+    el.classList.remove('open');
+    el.querySelector('.faq-icon').innerHTML = '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>';
+  });
+  // open clicked if it was closed
+  if (!isOpen) {
+    item.classList.add('open');
+    btn.querySelector('.faq-icon').innerHTML = '<line x1="5" y1="12" x2="19" y2="12"/>';
+  }
+}
+</script>
+</body>
+</html>
