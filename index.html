@@ -1,17 +1,21 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>KiwKiw — Never miss a customer message again</title>
 <meta name="description" content="KiwKiw replies to your Facebook messages in under 2 seconds with AI trained on your business. Close more sales, scale support, and hire zero new staff." />
 <link rel="icon" href="/assets/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap" rel="stylesheet" />
+<script>document.documentElement.classList.replace('no-js','js');</script>
 <style>
 /* ── Fonts ── */
-@font-face { font-family:"NotoLao"; font-weight:400; src:url("/fonts/NotoSansLaoLooped-Regular.ttf") format("truetype"); }
-@font-face { font-family:"NotoLao"; font-weight:500; src:url("/fonts/NotoSansLaoLooped-Medium.ttf") format("truetype"); }
-@font-face { font-family:"NotoLao"; font-weight:600; src:url("/fonts/NotoSansLaoLooped-SemiBold.ttf") format("truetype"); }
-@font-face { font-family:"NotoLao"; font-weight:700; src:url("/fonts/NotoSansLaoLooped-Bold.ttf") format("truetype"); }
+@font-face { font-family:"NotoLao"; font-weight:400; src:url("/fonts/NotoSansLaoLooped-Regular.ttf") format("truetype"); font-display:swap; }
+@font-face { font-family:"NotoLao"; font-weight:500; src:url("/fonts/NotoSansLaoLooped-Medium.ttf") format("truetype"); font-display:swap; }
+@font-face { font-family:"NotoLao"; font-weight:600; src:url("/fonts/NotoSansLaoLooped-SemiBold.ttf") format("truetype"); font-display:swap; }
+@font-face { font-family:"NotoLao"; font-weight:700; src:url("/fonts/NotoSansLaoLooped-Bold.ttf") format("truetype"); font-display:swap; }
 
 /* ── Reset & base ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -19,671 +23,713 @@ html { scroll-behavior: smooth; }
 body {
   font-family: "NotoLao", ui-sans-serif, system-ui, sans-serif;
   font-weight: 400;
-  color: #161616;
-  background: #fff;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink-body);
+  background: var(--ink-950);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
 }
 img { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
 button { font-family: inherit; cursor: pointer; }
+h1, h2, h3 {
+  font-family: "Bricolage Grotesque", "NotoLao", sans-serif;
+  font-optical-sizing: auto;
+  text-wrap: balance;
+}
 
 /* ── Tokens ── */
 :root {
-  --ink:    #0F2A3A;
-  --teal:   #1F7A8C;
-  --green:  #2C9E6A;
-  --orange: #E2833B;
-  --red:    #D74B3E;
-  --cream:  #F2EEE3;
-  --primary:#cacaff;
-  --pfg:    #27278f;
-  --fg1:    #161616;
-  --fg2:    #4A4A4A;
-  --fg3:    #939393;
-  --border: #EDEDED;
-  --card:   #F7F7F7;
-  --detail: #FCFCFC;
-  --radius: 10px;
-  --shadow: 0 4px 12px rgba(0,0,0,.08);
+  /* Parrot palette — navy drench */
+  --ink-950: #07161F;
+  --ink-900: #0A1F2B;
+  --ink-850: #0D2533;
+  --ink-800: #0F2A3A;
+  --ink-700: #173B50;
+  --ink-line: rgba(233,243,247,.1);
+
+  --teal:       #2FA3BC;
+  --teal-deep:  #1F7A8C;
+  --green:      #3FC98B;
+  --green-deep: #2C9E6A;
+  --orange:     #F39148;
+  --orange-hot: #F7A35F;
+  --red:        #E05B4E;
+  --msgr:       #0084FF;
+
+  /* On-dark text */
+  --ond-1: #EAF3F6;
+  --ond-2: rgba(234,243,246,.78);
+  --ond-3: rgba(234,243,246,.55);
+
+  /* Light surfaces */
+  --paper-0: #FFFFFF;
+  --paper-1: #F4F7F8;
+  --paper-line: #E2E9EC;
+  --onl-1: #10222D;
+  --onl-2: #3D4F59;
+  --onl-3: #64747D;
+
+  --ink-body: var(--ond-2);
+
+  --radius-sm: 10px;
+  --radius:    14px;
+  --radius-lg: 22px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);     /* quint */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Z scale */
+  --z-nav: 50;
+  --z-float: 5;
+
+  /* Spacing rhythm */
+  --section-pad: clamp(72px, 12vw, 140px);
+  --gutter: clamp(20px, 5vw, 48px);
 }
 
 /* ── Layout helpers ── */
-.container { max-width: 1120px; margin: 0 auto; }
-.section    { padding: 96px 40px; }
+.container { max-width: 1160px; margin-inline: auto; padding-inline: var(--gutter); }
 
 /* ── Buttons ── */
 .btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-weight: 600; border: none; border-radius: var(--radius);
-  cursor: pointer; transition: opacity .15s; white-space: nowrap;
-  text-decoration: none;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  font-family: "Bricolage Grotesque", "NotoLao", sans-serif;
+  font-weight: 650; letter-spacing: .005em;
+  border: none; border-radius: 12px;
+  white-space: nowrap; text-decoration: none;
+  transition: transform .18s var(--ease-out), box-shadow .18s var(--ease-out), background-color .18s var(--ease-out);
 }
-.btn-primary  { background: var(--ink);     color: #fff; }
-.btn-secondary{ background: var(--primary); color: var(--pfg); }
-.btn-ghost    { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
-.btn-lg  { height: 52px; padding: 0 24px; font-size: 16px; }
-.btn-xl  { height: 60px; padding: 0 32px; font-size: 17px; }
-.btn:hover { opacity: .88; }
+.btn svg { transition: transform .18s var(--ease-out); }
+.btn:hover svg { transform: translateX(3px); }
+.btn:active { transform: scale(.97); }
+.btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
 
-/* ── Eyebrow ── */
-.eyebrow {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 12px; font-weight: 500; letter-spacing: .04em;
-  text-transform: uppercase; border-radius: 999px;
-  padding: 6px 10px; margin-bottom: 18px;
+.btn-primary {
+  background: var(--orange);
+  color: #14202A;
+  box-shadow: 0 1px 0 rgba(255,255,255,.25) inset, 0 8px 28px rgba(243,145,72,.28);
 }
+.btn-primary:hover { background: var(--orange-hot); transform: translateY(-1px); }
+
+.btn-ghost-dark {
+  background: rgba(234,243,246,.06);
+  color: var(--ond-1);
+  border: 1px solid rgba(234,243,246,.2);
+}
+.btn-ghost-dark:hover { background: rgba(234,243,246,.11); }
+
+.btn-lg { min-height: 54px; padding: 0 26px; font-size: 1.0625rem; }
+.btn-xl { min-height: 60px; padding: 0 32px; font-size: 1.125rem; }
+.btn-sm { min-height: 44px; padding: 0 18px; font-size: .9375rem; }
 
 /* ──────────────────────────────────────────
    NAV
 ────────────────────────────────────────── */
-nav {
-  position: sticky; top: 0; z-index: 10;
-  background: rgba(255,255,255,.9);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 40px;
-  display: flex; align-items: center; justify-content: space-between;
+.nav {
+  position: sticky; top: 0; z-index: var(--z-nav);
+  background: color-mix(in srgb, var(--ink-950) 88%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--ink-line);
+  padding-top: env(safe-area-inset-top);
 }
-.nav-brand { display: flex; align-items: center; gap: 10px; }
-.nav-brand span { font-size: 18px; font-weight: 700; }
-.nav-login { font-size: 14px; font-weight: 500; color: var(--fg1); }
+.nav-inner {
+  max-width: 1160px; margin-inline: auto;
+  padding: 12px var(--gutter);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.nav-brand { display: flex; align-items: center; gap: 10px; min-height: 44px; }
+.nav-brand img { width: 34px; height: 34px; }
+.nav-brand span {
+  font-family: "Bricolage Grotesque", "NotoLao", sans-serif;
+  font-size: 1.25rem; font-weight: 750; color: var(--ond-1); letter-spacing: -0.01em;
+}
+.nav-actions { display: flex; align-items: center; gap: 6px; }
+.nav-login {
+  font-size: .9375rem; font-weight: 500; color: var(--ond-2);
+  padding: 10px 14px; border-radius: 10px; min-height: 44px;
+  display: inline-flex; align-items: center;
+  transition: color .15s;
+}
+.nav-login:hover { color: var(--ond-1); }
 
 /* ──────────────────────────────────────────
    HERO
 ────────────────────────────────────────── */
 .hero {
-  padding: 72px 40px 48px;
-  display: grid;
-  grid-template-columns: 1.05fr 1fr;
-  gap: 48px;
-  align-items: center;
-  max-width: 1240px;
-  margin: 0 auto;
+  position: relative;
+  background:
+    radial-gradient(1100px 520px at 12% -10%, rgba(47,163,188,.16), transparent 60%),
+    radial-gradient(900px 600px at 95% 95%, rgba(63,201,139,.1), transparent 55%),
+    var(--ink-900);
+  overflow: hidden;
+  border-bottom: 1px solid var(--ink-line);
 }
+/* faint dot field for depth */
+.hero::before {
+  content: ""; position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(234,243,246,.07) 1px, transparent 1.5px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(800px 500px at 70% 30%, #000 0%, transparent 75%);
+  -webkit-mask-image: radial-gradient(800px 500px at 70% 30%, #000 0%, transparent 75%);
+  pointer-events: none;
+}
+.hero-grid {
+  position: relative;
+  max-width: 1160px; margin-inline: auto;
+  padding: clamp(48px, 9vw, 104px) var(--gutter) clamp(40px, 6vw, 72px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(40px, 6vw, 72px);
+  align-items: center;
+}
+.hero-grid > * { min-width: 0; }
+@media (min-width: 960px) {
+  .hero-grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); }
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .875rem; font-weight: 600;
+  color: var(--ond-1);
+  background: rgba(47,163,188,.14);
+  border: 1px solid rgba(47,163,188,.35);
+  border-radius: 999px; padding: 7px 14px;
+  margin-bottom: clamp(18px, 3vw, 26px);
+}
+.hero-badge .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 0 rgba(63,201,139,.5);
+  animation: pulse 2.4s var(--ease-out) infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(63,201,139,.45); }
+  70% { box-shadow: 0 0 0 9px rgba(63,201,139,0); }
+  100% { box-shadow: 0 0 0 0 rgba(63,201,139,0); }
+}
+
 .hero h1 {
-  font-size: 60px; font-weight: 700;
-  line-height: 1.02; letter-spacing: -0.02em;
-  color: var(--fg1);
+  font-size: clamp(2.5rem, 6.5vw, 4.375rem);
+  font-weight: 760;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  color: var(--ond-1);
 }
 .hero h1 .accent { color: var(--teal); }
 .hero-sub {
-  font-size: 19px; line-height: 1.5; color: var(--fg2);
-  margin-top: 20px; max-width: 500px;
+  font-size: clamp(1.0625rem, 1.6vw, 1.1875rem);
+  line-height: 1.6;
+  color: var(--ond-2);
+  margin-top: clamp(16px, 2.5vw, 22px);
+  max-width: 34rem;
+  text-wrap: pretty;
 }
-.hero-ctas { display: flex; align-items: center; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
-.hero-stats { display: flex; flex-wrap: wrap; gap: 28px; margin-top: 32px; }
-.hero-stat-n { font-size: 22px; font-weight: 700; color: var(--ink); }
-.hero-stat-l { font-size: 13px; color: var(--fg3); }
+.hero-ctas { display: flex; align-items: center; gap: 14px; margin-top: clamp(24px, 3.5vw, 32px); flex-wrap: wrap; }
+.hero-fine { font-size: .875rem; color: var(--ond-3); margin-top: 14px; }
 
-/* Hero visual */
-.hero-visual { position: relative; height: 540px; }
+/* ── Live reply ticker ── */
+.ticker-wrap { margin-top: clamp(32px, 5vw, 48px); max-width: 36rem; }
+.ticker-label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: .8125rem; font-weight: 600; color: var(--ond-2);
+  margin-bottom: 10px;
+}
+.ticker-label .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+.ticker {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+.ticker-track {
+  display: flex; gap: 10px; width: max-content;
+  animation: ticker 30s linear infinite;
+}
+.ticker:hover .ticker-track { animation-play-state: paused; }
+@keyframes ticker { to { transform: translateX(-50%); } }
+.chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .8125rem; color: var(--ond-2);
+  background: rgba(234,243,246,.05);
+  border: 1px solid var(--ink-line);
+  border-radius: 999px; padding: 8px 14px;
+  white-space: nowrap;
+}
+.chip b { font-weight: 600; color: var(--ond-1); }
+.chip .t { color: var(--green); font-weight: 600; font-variant-numeric: tabular-nums; }
 
-.messenger-mock {
-  position: absolute; top: 0; left: 0; width: 280px;
-  background: #fff; border-radius: 20px;
-  box-shadow: 0 24px 60px rgba(0,0,0,.12);
-  border: 1px solid var(--border); overflow: hidden; z-index: 2;
+/* ── Phone mock ── */
+.hero-visual { position: relative; display: flex; justify-content: center; }
+.hero-visual::before {
+  content: ""; position: absolute; inset: 8% -6% -4% -6%;
+  background: radial-gradient(closest-side, rgba(47,163,188,.22), transparent 72%);
+  filter: blur(8px);
+  pointer-events: none;
+}
+.phone {
+  position: relative;
+  width: min(340px, 88vw);
+  background: #fff;
+  border-radius: 30px;
+  border: 1px solid rgba(255,255,255,.5);
+  box-shadow:
+    0 2px 0 rgba(255,255,255,.4) inset,
+    0 30px 70px rgba(2,10,15,.55),
+    0 6px 18px rgba(2,10,15,.4);
+  overflow: hidden;
+  z-index: var(--z-float);
 }
 .messenger-header {
-  background: #0084FF; color: #fff;
-  padding: 12px 14px; display: flex; align-items: center; gap: 10px;
+  background: var(--msgr); color: #fff;
+  padding: 14px 16px; display: flex; align-items: center; gap: 10px;
 }
 .messenger-avatar {
-  width: 32px; height: 32px; border-radius: 999px;
+  width: 34px; height: 34px; border-radius: 999px;
   background: #fff; overflow: hidden; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
 }
-.messenger-avatar img { width: 28px; height: 28px; }
-.messenger-name { font-size: 13px; font-weight: 600; }
-.messenger-status { font-size: 11px; opacity: .85; }
+.messenger-avatar img { width: 30px; height: 30px; }
+.messenger-name { font-size: .875rem; font-weight: 600; line-height: 1.3; }
+.messenger-status { font-size: .75rem; opacity: .9; display: flex; align-items: center; gap: 5px; }
+.messenger-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #7BE3A8; }
 .messenger-body {
-  padding: 14px; display: flex; flex-direction: column; gap: 8px;
-  background: var(--card); min-height: 240px;
+  padding: 16px 14px 18px;
+  display: flex; flex-direction: column; gap: 9px;
+  background: #F2F5F7;
+  min-height: 320px; max-height: 320px;
+  overflow: hidden;
 }
 .bubble {
-  padding: 8px 12px; font-size: 13px; max-width: 75%;
+  padding: 9px 13px; font-size: .875rem; line-height: 1.45; max-width: 78%;
 }
 .bubble-in {
   align-self: flex-start;
-  background: #fff; border: 1px solid var(--border);
-  border-radius: 16px 16px 16px 4px;
+  background: #fff; color: #1B2B35;
+  border: 1px solid #E4EAEE;
+  border-radius: 16px 16px 16px 5px;
 }
 .bubble-out {
   align-self: flex-end;
-  background: #0084FF; color: #fff;
-  border-radius: 16px 16px 4px 16px;
+  background: var(--msgr); color: #fff;
+  border-radius: 16px 16px 5px 16px;
 }
-.bubble-meta { font-size: 10px; opacity: .8; margin-top: 4px; }
+.bubble-meta { font-size: .6875rem; opacity: .85; margin-top: 5px; }
 
-.dashboard-mock {
-  position: absolute; bottom: 0; right: 0; width: 380px;
-  background: #fff; border: 1px solid var(--border);
-  border-radius: 14px; box-shadow: 0 24px 60px rgba(0,0,0,.10);
-  overflow: hidden;
-}
-.dash-header {
-  padding: 14px 16px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-}
-.dash-title { font-size: 14px; font-weight: 600; }
-.dash-live   { font-size: 11px; color: var(--green); font-weight: 500; }
-.dash-stats  { padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.stat-card   { border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
-.stat-label  { font-size: 11px; color: var(--fg3); text-transform: uppercase; letter-spacing: .08em; }
-.stat-val    { font-size: 22px; font-weight: 700; color: var(--fg1); margin-top: 2px; }
-.stat-delta  { font-size: 11px; color: var(--green); }
-.dash-replies{ padding: 0 16px 16px; }
-.dash-sub    { font-size: 11px; color: var(--fg3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; font-weight: 500; }
-.reply-row   {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 0; border-top: 1px solid #F4F4F4; font-size: 13px;
-}
-.reply-who  { color: var(--fg2); }
-.reply-time { color: var(--green); font-family: ui-monospace, monospace; font-size: 11px; }
-
-.powered-badge {
-  position: absolute; top: 180px; right: 40px; z-index: 3;
-  background: var(--cream); border: 1px solid rgba(15,42,58,.1);
-  border-radius: 999px; padding: 8px 14px 8px 10px;
+/* reply-speed flag floating off the phone */
+.speed-flag {
+  position: absolute; top: -14px; right: max(-12px, -3vw);
+  z-index: calc(var(--z-float) + 1);
+  background: var(--ink-800);
+  border: 1px solid rgba(63,201,139,.4);
+  color: var(--ond-1);
+  border-radius: 12px; padding: 10px 14px;
+  font-size: .8125rem; font-weight: 600;
+  box-shadow: 0 14px 36px rgba(2,10,15,.5);
   display: flex; align-items: center; gap: 8px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.08);
-  font-size: 12px; font-weight: 600; color: var(--ink);
 }
-.powered-badge img { width: 24px; height: 24px; }
+.speed-flag .num {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 1.25rem; font-weight: 750; color: var(--green);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+@media (max-width: 959.98px) {
+  /* keep the flag clear of the chat text: pin to the phone's bottom edge */
+  .speed-flag { top: auto; bottom: -14px; right: 50%; transform: translateX(50%); white-space: nowrap; }
+}
+@media (max-width: 479.98px) {
+  .hero-ctas .btn, .cta-btns .btn, .how-cta .btn { width: 100%; }
+}
+
+/* ── Hero load choreography ── */
+.js [data-rise] {
+  animation: rise .8s var(--ease-expo) backwards;
+  animation-delay: calc(var(--i, 0) * 100ms);
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.js .hero-visual { animation: phone-in 1s var(--ease-expo) .25s backwards; }
+@keyframes phone-in {
+  from { opacity: 0; transform: translateY(36px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
 
 /* ──────────────────────────────────────────
-   PROBLEM / SOLUTION
+   SCROLL REVEALS (JS adds .in-view)
 ────────────────────────────────────────── */
-.problem-section {
-  padding: 96px 40px;
-  background: var(--detail);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity .7s var(--ease-expo), transform .7s var(--ease-expo);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+.js [data-reveal="left"]  { transform: translateX(-30px); }
+.js [data-reveal="right"] { transform: translateX(30px); }
+.js .in-view [data-reveal],
+.js [data-reveal].in-view {
+  opacity: 1; transform: none;
+}
+
+/* ──────────────────────────────────────────
+   PROBLEM — the dying chat
+────────────────────────────────────────── */
+.problem {
+  background: var(--paper-1);
+  color: var(--onl-1);
+  padding: var(--section-pad) 0;
 }
 .problem-grid {
-  max-width: 1120px; margin: 0 auto;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+  display: grid; grid-template-columns: 1fr;
+  gap: clamp(40px, 6vw, 80px);
+  align-items: center;
 }
-.problem-eyebrow { font-size: 13px; font-weight: 500; color: var(--red); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 12px; }
-.problem-h2 { font-size: 40px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.1; color: var(--fg1); }
-.problem-list { margin-top: 28px; display: flex; flex-direction: column; gap: 14px; }
-.problem-item { display: flex; gap: 14px; align-items: flex-start; }
-.problem-icon {
-  width: 36px; height: 36px; border-radius: 10px;
-  background: #fff; border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; color: var(--red);
+@media (min-width: 900px) {
+  .problem-grid { grid-template-columns: 1.05fr .95fr; }
 }
-.problem-icon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.problem-title { font-size: 15px; font-weight: 600; color: var(--fg1); }
-.problem-body  { font-size: 14px; color: var(--fg2); line-height: 1.5; margin-top: 2px; }
-.problem-quote { margin-top: 24px; font-size: 15px; font-weight: 600; color: var(--ink); border-left: 3px solid var(--orange); padding-left: 12px; }
+.problem h2 {
+  font-size: clamp(1.875rem, 4.2vw, 2.875rem);
+  font-weight: 740; letter-spacing: -0.02em; line-height: 1.08;
+  color: var(--onl-1);
+}
+.problem h2 .hl { color: var(--red); }
+.problem-lead {
+  font-size: 1.0625rem; color: var(--onl-2); line-height: 1.65;
+  margin-top: 18px; max-width: 32rem; text-wrap: pretty;
+}
+.pain-list { margin-top: clamp(24px, 4vw, 36px); display: flex; flex-direction: column; }
+.pain {
+  display: flex; gap: 16px; align-items: baseline;
+  padding: 16px 0;
+  border-top: 1px solid var(--paper-line);
+}
+.pain:last-child { border-bottom: 1px solid var(--paper-line); }
+.pain-when {
+  flex-shrink: 0; width: 5.5rem;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: .9375rem; font-weight: 700; color: var(--red);
+  font-variant-numeric: tabular-nums;
+}
+.pain-text { font-size: .9844rem; color: var(--onl-2); line-height: 1.55; }
+.pain-text b { color: var(--onl-1); font-weight: 600; }
+.problem-quote {
+  margin-top: clamp(22px, 3.5vw, 30px);
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 1.1875rem; font-weight: 650; color: var(--onl-1);
+  letter-spacing: -0.01em;
+}
 
-.solution-card {
-  background: var(--ink); color: #fff;
-  border-radius: 20px; padding: 40px;
-  position: relative; overflow: hidden;
+/* dead chat mock */
+.dead-chat {
+  background: #fff;
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 60px rgba(16,34,45,.1);
+  overflow: hidden;
+  max-width: 400px;
+  margin-inline: auto;
+  width: 100%;
 }
-.solution-card .bg-logo {
-  position: absolute; right: -40px; bottom: -40px; width: 280px; opacity: .15;
+.dead-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 16px; border-bottom: 1px solid var(--paper-line);
+  font-size: .8125rem; color: var(--onl-3);
 }
-.solution-inner { position: relative; }
-.solution-eyebrow { font-size: 12px; font-weight: 500; color: var(--primary); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
-.solution-h { font-size: 32px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.15; }
-.solution-body { font-size: 16px; line-height: 1.55; color: rgba(255,255,255,.8); margin-top: 16px; }
-.solution-list { list-style: none; margin: 20px 0 28px; display: flex; flex-direction: column; gap: 10px; }
-.solution-list li { display: flex; align-items: center; gap: 10px; font-size: 14px; }
-.solution-list svg { width: 16px; height: 16px; stroke: var(--green); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.dead-head b { color: var(--onl-1); font-weight: 600; font-size: .875rem; }
+.dead-body { padding: 18px 16px 20px; display: flex; flex-direction: column; gap: 8px; background: #FAFCFC; }
+.dead-body .bubble-in { background: #fff; }
+.dead-body .bubble-out { background: #C7D2D9; color: #2A3941; }
+.dead-stamp {
+  align-self: center; font-size: .75rem; color: var(--onl-3);
+  padding: 4px 0 2px;
+}
+.dead-stamp.late {
+  color: var(--red); font-weight: 600;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.dead-stamp.late::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
+.dead-foot {
+  border-top: 1px solid var(--paper-line);
+  padding: 12px 16px;
+  font-size: .8125rem; font-weight: 600; color: var(--red);
+  background: #fff;
+  text-align: center;
+}
 
 /* ──────────────────────────────────────────
-   BENEFITS
+   SOLUTION + BENEFITS (dark bento)
 ────────────────────────────────────────── */
-.benefits-section { padding: 96px 40px; }
-.benefits-header  { text-align: center; margin-bottom: 48px; }
-.section-eyebrow  { font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; color: var(--pfg); }
-.section-h2 { font-size: 44px; font-weight: 700; letter-spacing: -0.02em; color: var(--fg1); }
-.benefits-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-.benefit-card {
-  background: #fff; border: 1px solid var(--border);
-  border-radius: 14px; padding: 24px;
+.solution {
+  background:
+    radial-gradient(1000px 500px at 85% 0%, rgba(47,163,188,.12), transparent 60%),
+    var(--ink-950);
+  padding: var(--section-pad) 0;
+  position: relative;
+  overflow: hidden;
 }
-.benefit-icon {
-  width: 44px; height: 44px; border-radius: 10px;
-  display: flex; align-items: center; justify-content: center; margin-bottom: 16px;
+.solution .bg-logo {
+  position: absolute; right: -90px; bottom: -90px; width: clamp(260px, 30vw, 420px);
+  opacity: .07; pointer-events: none;
 }
-.benefit-icon svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.benefit-title { font-size: 17px; font-weight: 600; color: var(--fg1); margin-bottom: 6px; }
-.benefit-body  { font-size: 14px; color: var(--fg2); line-height: 1.5; }
+.solution-head { max-width: 44rem; }
+.solution-head h2 {
+  font-size: clamp(2rem, 4.6vw, 3.25rem);
+  font-weight: 750; letter-spacing: -0.022em; line-height: 1.06;
+  color: var(--ond-1);
+}
+.solution-head h2 .accent { color: var(--green); }
+.solution-lead {
+  font-size: 1.0938rem; line-height: 1.65; color: var(--ond-2);
+  margin-top: 18px; max-width: 36rem; text-wrap: pretty;
+}
+.solution-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .875rem; font-weight: 500; color: var(--ond-1);
+  background: rgba(234,243,246,.05);
+  border: 1px solid var(--ink-line);
+  border-radius: 999px; padding: 8px 15px;
+}
+.pill svg { width: 14px; height: 14px; stroke: var(--green); fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+/* bento */
+.bento {
+  display: grid; gap: 14px;
+  grid-template-columns: 1fr;
+  margin-top: clamp(36px, 5vw, 56px);
+}
+@media (min-width: 760px) {
+  .bento { grid-template-columns: repeat(3, 1fr); }
+  .b-wide { grid-column: span 2; }
+}
+.b-card {
+  background: linear-gradient(180deg, rgba(234,243,246,.045), rgba(234,243,246,.015));
+  border: 1px solid var(--ink-line);
+  border-radius: var(--radius-lg);
+  padding: clamp(22px, 3vw, 30px);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  min-height: 190px;
+  transition: border-color .25s var(--ease-out), transform .25s var(--ease-out);
+}
+@media (hover: hover) {
+  .b-card:hover { border-color: rgba(234,243,246,.24); transform: translateY(-3px); }
+}
+.b-kicker {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: clamp(1.5rem, 2.4vw, 1.875rem);
+  font-weight: 740; letter-spacing: -0.015em; line-height: 1.1;
+  color: var(--ond-1);
+  margin-bottom: 8px;
+}
+.b-kicker .accent-teal   { color: var(--teal); }
+.b-kicker .accent-green  { color: var(--green); }
+.b-kicker .accent-orange { color: var(--orange); }
+.b-body { font-size: .9375rem; color: var(--ond-2); line-height: 1.6; max-width: 30rem; }
+
+/* live strip inside the wide card */
+.b-live {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: auto; padding-bottom: 26px;
+}
+.b-live .badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: .8125rem; font-weight: 600; color: var(--green);
+  background: rgba(63,201,139,.1);
+  border: 1px solid rgba(63,201,139,.3);
+  border-radius: 999px; padding: 6px 13px;
+}
+.b-live .badge .dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--green);
+  animation: pulse 2.4s var(--ease-out) infinite;
+}
+.b-live .hours { font-size: .8125rem; color: var(--ond-3); font-variant-numeric: tabular-nums; }
+.solution-cta { margin-top: clamp(32px, 4.5vw, 44px); }
 
 /* ──────────────────────────────────────────
    HOW IT WORKS
 ────────────────────────────────────────── */
-.how-section { padding: 96px 40px; background: var(--cream); }
-.how-header  { text-align: center; margin-bottom: 56px; }
-.how-eyebrow { font-size: 13px; font-weight: 500; color: var(--ink); opacity: .7; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
-.how-h2 { font-size: 44px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
-.how-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
-.how-card {
-  background: #fff; border-radius: 14px; padding: 28px;
-  position: relative; box-shadow: 0 4px 12px rgba(15,42,58,.06);
+.how { background: var(--paper-0); color: var(--onl-1); padding: var(--section-pad) 0; }
+.how-head { max-width: 40rem; margin-bottom: clamp(40px, 6vw, 64px); }
+.how-head h2 {
+  font-size: clamp(1.875rem, 4.2vw, 2.875rem);
+  font-weight: 740; letter-spacing: -0.02em; line-height: 1.08;
+  color: var(--onl-1);
 }
-.how-num {
-  position: absolute; top: -16px; left: 28px;
-  background: var(--ink); color: #fff;
-  width: 36px; height: 36px; border-radius: 999px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px; font-weight: 700;
-}
-.how-icon { color: var(--teal); margin-top: 16px; margin-bottom: 14px; }
-.how-icon svg { width: 28px; height: 28px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.how-title { font-size: 18px; font-weight: 700; color: var(--ink); }
-.how-body  { font-size: 14px; color: var(--fg2); line-height: 1.55; margin-top: 6px; }
-.how-cta   { text-align: center; margin-top: 40px; }
+.how-head p { font-size: 1.0625rem; color: var(--onl-2); margin-top: 14px; }
 
-/* ──────────────────────────────────────────
-   SOCIAL PROOF
-────────────────────────────────────────── */
-.proof-section { padding: 96px 40px; background: #fff; }
-.proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-.proof-card {
-  border: 1px solid var(--border); border-radius: 14px; padding: 28px;
-  display: flex; flex-direction: column; gap: 18px; background: var(--detail);
+.steps { position: relative; display: grid; grid-template-columns: 1fr; gap: clamp(28px, 4vw, 24px); counter-reset: step; }
+@media (min-width: 820px) { .steps { grid-template-columns: repeat(3, 1fr); } }
+
+/* connecting line */
+.steps::before {
+  content: ""; position: absolute;
+  background: var(--paper-line);
 }
-.proof-quote-mark { font-size: 26px; font-weight: 700; line-height: 1; }
-.proof-text  { font-size: 16px; color: var(--fg1); line-height: 1.5; }
-.proof-pill  { display: inline-flex; align-self: flex-start; background: var(--primary); color: var(--pfg); padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
-.proof-author { display: flex; align-items: center; gap: 10px; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--border); }
-.proof-avatar { width: 40px; height: 40px; border-radius: 999px; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
-.proof-name  { font-size: 14px; font-weight: 600; color: var(--fg1); }
-.proof-role  { font-size: 12px; color: var(--fg3); }
+@media (min-width: 820px) {
+  .steps::before { top: 27px; left: 8%; right: 8%; height: 2px; }
+}
+@media (max-width: 819.98px) {
+  .steps::before { top: 27px; bottom: 27px; left: 26px; width: 2px; }
+}
+.steps .fill {
+  position: absolute; background: var(--green-deep); z-index: 1;
+}
+@media (min-width: 820px) {
+  .steps .fill { top: 27px; left: 8%; right: 8%; height: 2px; transform: scaleX(0); transform-origin: left; }
+  .js .steps.in-view .fill { transition: transform 1.4s var(--ease-expo) .3s; transform: scaleX(1); }
+}
+@media (max-width: 819.98px) {
+  .steps .fill { top: 27px; bottom: 27px; left: 26px; width: 2px; transform: scaleY(0); transform-origin: top; }
+  .js .steps.in-view .fill { transition: transform 1.4s var(--ease-expo) .3s; transform: scaleY(1); }
+}
+
+.step { position: relative; z-index: 2; display: flex; flex-direction: column; gap: 14px; }
+@media (max-width: 819.98px) { .step { flex-direction: row; gap: 18px; } }
+.step-num {
+  counter-increment: step;
+  flex-shrink: 0;
+  width: 54px; height: 54px; border-radius: 999px;
+  background: var(--ink-800); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 1.1875rem; font-weight: 750;
+  border: 4px solid var(--paper-0);
+  box-shadow: 0 6px 16px rgba(15,42,58,.18);
+}
+.step-num::before { content: counter(step); }
+.step-title {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em;
+  color: var(--onl-1);
+}
+.step-body { font-size: .9375rem; color: var(--onl-2); line-height: 1.6; margin-top: 5px; max-width: 26rem; }
+.how-cta { margin-top: clamp(40px, 6vw, 56px); display: flex; justify-content: center; }
 
 /* ──────────────────────────────────────────
    FAQ
 ────────────────────────────────────────── */
-.faq-section { padding: 96px 40px; background: var(--detail); }
-.faq-inner   { max-width: 780px; margin: 0 auto; }
-.faq-header  { text-align: center; margin-bottom: 40px; }
-.faq-h2 { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; color: var(--fg1); }
-.faq-list { display: flex; flex-direction: column; gap: 10px; }
-.faq-item { background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.faq { background: var(--paper-1); color: var(--onl-1); padding: var(--section-pad) 0; }
+.faq-inner { max-width: 760px; margin-inline: auto; }
+.faq h2 {
+  font-size: clamp(1.875rem, 4vw, 2.625rem);
+  font-weight: 740; letter-spacing: -0.02em;
+  color: var(--onl-1);
+  margin-bottom: clamp(28px, 4.5vw, 44px);
+}
+.faq-list { display: flex; flex-direction: column; gap: 12px; }
+.faq-item {
+  background: var(--paper-0);
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.faq-item.open { border-color: #C5D2D8; }
 .faq-btn {
   width: 100%; text-align: left; padding: 18px 20px;
   background: transparent; border: none;
-  font-size: 16px; font-weight: 600; color: var(--fg1);
-  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  font-family: inherit;
+  font-size: 1.0313rem; font-weight: 600; color: var(--onl-1);
+  display: flex; justify-content: space-between; align-items: center; gap: 14px;
+  min-height: 56px;
 }
-.faq-btn svg { width: 20px; height: 20px; stroke: var(--fg3); fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
-.faq-answer { padding: 0 20px 18px; font-size: 15px; line-height: 1.55; color: var(--fg2); display: none; }
-.faq-item.open .faq-answer { display: block; }
+.faq-btn:focus-visible { outline: 2px solid var(--teal-deep); outline-offset: -2px; border-radius: var(--radius); }
+.faq-icon {
+  width: 22px; height: 22px; flex-shrink: 0;
+  stroke: var(--onl-3); fill: none; stroke-width: 2.2; stroke-linecap: round;
+  transition: transform .3s var(--ease-out);
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); stroke: var(--ink-800); }
+.faq-panel {
+  display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows .35s var(--ease-out);
+}
+.faq-item.open .faq-panel { grid-template-rows: 1fr; }
+.faq-answer { overflow: hidden; }
+.faq-answer p {
+  padding: 0 20px 20px;
+  font-size: .9688rem; line-height: 1.65; color: var(--onl-2);
+  max-width: 62ch;
+}
 
 /* ──────────────────────────────────────────
    FINAL CTA
 ────────────────────────────────────────── */
-.cta-section {
-  padding: 96px 40px; background: var(--ink); color: #fff;
-  position: relative; overflow: hidden; text-align: center;
+.cta {
+  position: relative; overflow: hidden;
+  background:
+    radial-gradient(900px 480px at 50% 120%, rgba(243,145,72,.14), transparent 65%),
+    radial-gradient(800px 400px at 10% -20%, rgba(47,163,188,.14), transparent 60%),
+    var(--ink-900);
+  border-top: 1px solid var(--ink-line);
+  padding: var(--section-pad) 0;
+  text-align: center;
 }
-.cta-section .bg-logo {
-  position: absolute; right: -80px; top: 50%; transform: translateY(-50%);
-  width: 440px; opacity: .15; pointer-events: none;
+.cta .bg-logo {
+  position: absolute; right: -70px; top: 50%; transform: translateY(-50%);
+  width: clamp(280px, 34vw, 440px); opacity: .06; pointer-events: none;
 }
-.cta-inner { max-width: 760px; margin: 0 auto; position: relative; }
-.cta-h2 { font-size: 52px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.08; }
-.cta-sub { font-size: 18px; color: rgba(255,255,255,.8); margin-top: 18px; line-height: 1.5; }
-.cta-btns { margin-top: 32px; display: flex; gap: 12px; justify-content: center; }
-.cta-fine { margin-top: 18px; font-size: 13px; color: rgba(255,255,255,.65); }
+.cta-inner { max-width: 800px; margin-inline: auto; position: relative; }
+.cta h2 {
+  font-size: clamp(2.125rem, 5.4vw, 3.625rem);
+  font-weight: 760; letter-spacing: -0.025em; line-height: 1.05;
+  color: var(--ond-1);
+}
+.cta-sub {
+  font-size: 1.0938rem; color: var(--ond-2); margin-top: 18px; line-height: 1.6;
+  max-width: 34rem; margin-inline: auto;
+}
+.cta-btns { margin-top: clamp(28px, 4vw, 36px); display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.cta-fine { margin-top: 18px; font-size: .875rem; color: var(--ond-3); }
 
 /* ──────────────────────────────────────────
    FOOTER
 ────────────────────────────────────────── */
-footer {
-  padding: 48px 40px 32px;
-  background: #161A1F; color: rgba(255,255,255,.7);
+.footer {
+  background: var(--ink-950);
+  color: var(--ond-3);
+  border-top: 1px solid var(--ink-line);
+  padding: clamp(40px, 6vw, 56px) 0 0;
 }
 .footer-grid {
-  max-width: 1120px; margin: 0 auto;
-  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+  display: grid; grid-template-columns: 1fr; gap: 36px;
 }
+@media (min-width: 700px) { .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; } }
 .footer-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-.footer-brand span { font-size: 18px; font-weight: 700; color: #fff; }
+.footer-brand span {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 1.125rem; font-weight: 750; color: var(--ond-1);
+}
 .footer-brand img { width: 32px; height: 32px; }
-.footer-desc { font-size: 13px; line-height: 1.55; max-width: 320px; }
-.footer-col-h { font-size: 12px; font-weight: 600; color: #fff; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 12px; }
-.footer-link  { display: block; font-size: 13px; padding: 6px 0; color: rgba(255,255,255,.7); }
-.footer-link:hover { color: #fff; }
+.footer-desc { font-size: .875rem; line-height: 1.6; max-width: 300px; color: var(--ond-3); }
+.footer-col-h {
+  font-size: .8125rem; font-weight: 600; color: var(--ond-1);
+  margin-bottom: 12px;
+}
+.footer-link {
+  display: inline-flex; align-items: center;
+  font-size: .875rem; padding: 7px 0; min-height: 36px;
+  color: var(--ond-3); transition: color .15s;
+}
+.footer-link { display: block; }
+.footer-link:hover { color: var(--ond-1); }
 .footer-bottom {
-  max-width: 1120px; margin: 32px auto 0; padding-top: 20px;
-  border-top: 1px solid rgba(255,255,255,.08);
-  display: flex; justify-content: space-between; font-size: 12px;
+  margin-top: clamp(32px, 5vw, 44px);
+  padding: 20px 0 calc(24px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--ink-line);
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 10px; flex-wrap: wrap;
+  font-size: .8125rem;
 }
 
 /* ──────────────────────────────────────────
-   RESPONSIVE (basic)
+   CHAT SIM details
 ────────────────────────────────────────── */
-@media (max-width: 900px) {
-  .hero, .problem-grid { grid-template-columns: 1fr; }
-  .hero h1 { font-size: 40px; }
-  .benefits-grid, .how-grid, .proof-grid { grid-template-columns: 1fr 1fr; }
-  .footer-grid { grid-template-columns: 1fr 1fr; }
-
-  /* Hero visual — mobile: show only messenger, stack below text */
-  .hero-visual {
-    position: relative;
-    height: auto;
-    width: 100%;
-  }
-  .messenger-mock {
-    position: relative;
-    top: auto; left: auto;
-    width: 100%;
-    max-width: 340px;
-    margin: 0 auto;
-    border-radius: 16px;
-  }
-  .dashboard-mock { display: none; }
-  .powered-badge  { display: none; }
-}
-@media (max-width: 600px) {
-  nav, .hero, .section, .problem-section, .benefits-section,
-  .how-section, .proof-section, .faq-section, .cta-section, footer { padding-left: 20px; padding-right: 20px; }
-  .benefits-grid, .how-grid, .proof-grid { grid-template-columns: 1fr; }
-  .cta-h2 { font-size: 34px; }
-  .hero h1 { font-size: 36px; }
-  .section-h2, .faq-h2, .how-h2 { font-size: 30px; }
-  .footer-grid { grid-template-columns: 1fr; }
-  .footer-bottom { flex-direction: column; gap: 8px; }
-}
-</style>
-</head>
-<body>
-
-<!-- NAV -->
-<nav>
-  <div class="nav-brand">
-    <img src="/assets/logo.png" alt="KiwKiw" width="32" height="32" />
-    <span>KiwKiw</span>
-  </div>
-  <a href="https://portal.kiwkiw-parrot.com/en/auth" class="nav-login">Log in</a>
-</nav>
-
-<!-- HERO -->
-<div class="hero">
-  <div>
-    <div class="eyebrow" style="background:var(--primary);color:var(--pfg);">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8H20l-5 3.7 1.9 5.8L12 15l-4.9 3.3L9 12.5 4 8.8h6.1z"/></svg>
-      AI for Messenger
-    </div>
-    <h1>Never miss a customer<br><span class="accent">message</span> again.</h1>
-    <p class="hero-sub">KiwKiw replies to your Facebook messages in under 2 seconds with AI trained on your business. Close more sales, scale support, and hire zero new staff.</p>
-    <div class="hero-ctas">
-      <a href="https://portal.kiwkiw-parrot.com/en/auth" class="btn btn-primary btn-xl">
-        Automate My Messages
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
-    <div class="hero-stats">
-      <div><div class="hero-stat-n">&lt;2s</div><div class="hero-stat-l">avg. response time</div></div>
-      <div><div class="hero-stat-n">24/7</div><div class="hero-stat-l">always on, never misses</div></div>
-      <div><div class="hero-stat-n">5 min</div><div class="hero-stat-l">setup time</div></div>
-    </div>
-  </div>
-
-  <div class="hero-visual">
-    <!-- Messenger mock -->
-    <div class="messenger-mock">
-      <div class="messenger-header">
-        <div class="messenger-avatar"><img src="/assets/logo.png" alt="" /></div>
-        <div>
-          <div class="messenger-name">Lina's Boutique</div>
-          <div class="messenger-status">Active now</div>
-        </div>
-      </div>
-      <div class="messenger-body" id="messenger-body"></div>
-    </div>
-
-    <!-- Dashboard mock -->
-    <div class="dashboard-mock">
-      <div class="dash-header">
-        <div class="dash-title">Today's activity</div>
-        <div class="dash-live">● Live</div>
-      </div>
-      <div class="dash-stats">
-        <div class="stat-card"><div class="stat-label">Messages</div><div class="stat-val">1,284</div><div class="stat-delta">▲ +18%</div></div>
-        <div class="stat-card"><div class="stat-label">Resolved by AI</div><div class="stat-val">92%</div><div class="stat-delta">▲ +3%</div></div>
-      </div>
-      <div class="dash-replies">
-        <div class="dash-sub">Latest auto-replies</div>
-        <div class="reply-row"><span class="reply-who">Maya · price question</span><span class="reply-time">1.2s</span></div>
-        <div class="reply-row"><span class="reply-who">Tom · opening hours</span><span class="reply-time">0.9s</span></div>
-        <div class="reply-row"><span class="reply-who">Sua · returns policy</span><span class="reply-time">1.5s</span></div>
-      </div>
-    </div>
-
-    <!-- Badge -->
-    <div class="powered-badge">
-      <img src="/assets/logo.png" alt="" />
-      Powered by KiwKiw AI
-    </div>
-  </div>
-</div>
-
-<!-- PROBLEM / SOLUTION -->
-<div class="problem-section">
-  <div class="problem-grid">
-    <div>
-      <div class="problem-eyebrow">The problem</div>
-      <h2 class="problem-h2">Customer messages are costing you sales.</h2>
-      <div class="problem-list">
-        <div class="problem-item">
-          <div class="problem-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-          <div><div class="problem-title">You reply too late</div><div class="problem-body">Customers don't wait — they message three competitors at once.</div></div>
-        </div>
-        <div class="problem-item">
-          <div class="problem-icon"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></div>
-          <div><div class="problem-title">Your team repeats answers</div><div class="problem-body">Price, sizing, hours, shipping — the same questions, every day.</div></div>
-        </div>
-        <div class="problem-item">
-          <div class="problem-icon"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></div>
-          <div><div class="problem-title">You miss messages at night</div><div class="problem-body">Leads go cold between 10pm and 8am. SEA sleeps; Messenger doesn't.</div></div>
-        </div>
-        <div class="problem-item">
-          <div class="problem-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
-          <div><div class="problem-title">Scaling means hiring</div><div class="problem-body">More volume means more agents. Payroll climbs faster than margin.</div></div>
-        </div>
-      </div>
-      <p class="problem-quote">Every missed message is a lost opportunity.</p>
-    </div>
-
-    <div class="solution-card">
-      <img class="bg-logo" src="/assets/logo.png" alt="" />
-      <div class="solution-inner">
-        <div class="solution-eyebrow">The solution</div>
-        <div class="solution-h">Meet KiwKiw — your AI chat assistant.</div>
-        <p class="solution-body">KiwKiw automatically replies to your customer messages using AI trained on your business. It answers FAQs, handles inquiries, and turns conversations into sales — 24/7.</p>
-        <ul class="solution-list">
-          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>No coding</li>
-          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>No complex setup</li>
-          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Works on your Facebook Page in under 5 minutes</li>
-        </ul>
-        <a href="https://portal.kiwkiw-parrot.com/en/auth" class="btn btn-secondary btn-lg">
-          Automate My Messages
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- BENEFITS -->
-<div class="benefits-section">
-  <div class="container">
-    <div class="benefits-header">
-      <div class="section-eyebrow">Benefits</div>
-      <h2 class="section-h2">Turn conversations into conversions.</h2>
-    </div>
-    <div class="benefits-grid">
-      <div class="benefit-card">
-        <div class="benefit-icon" style="background:#1F7A8C18;color:#1F7A8C"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-        <div class="benefit-title">Reply instantly, 24/7</div>
-        <div class="benefit-body">Your customers get answers in seconds — even when you're offline.</div>
-      </div>
-      <div class="benefit-card">
-        <div class="benefit-icon" style="background:#2C9E6A18;color:#2C9E6A"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
-        <div class="benefit-title">Convert more leads</div>
-        <div class="benefit-body">Respond faster and never miss a potential buyer again.</div>
-      </div>
-      <div class="benefit-card">
-        <div class="benefit-icon" style="background:#E2833B18;color:#E2833B"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
-        <div class="benefit-title">Reduce support workload</div>
-        <div class="benefit-body">Let AI handle repetitive questions so your team focuses on what matters.</div>
-      </div>
-      <div class="benefit-card">
-        <div class="benefit-icon" style="background:#53278818;color:#532788"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-        <div class="benefit-title">Scale without hiring</div>
-        <div class="benefit-body">Handle 10× more conversations without increasing headcount.</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- HOW IT WORKS -->
-<div class="how-section">
-  <div class="container">
-    <div class="how-header">
-      <div class="how-eyebrow">How it works</div>
-      <h2 class="how-h2">Get started in minutes.</h2>
-    </div>
-    <div class="how-grid">
-      <div class="how-card">
-        <div class="how-num">1</div>
-        <div class="how-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></div>
-        <div class="how-title">Connect your Messenger</div>
-        <div class="how-body">Link your Facebook page in one click via Meta OAuth.</div>
-      </div>
-      <div class="how-card">
-        <div class="how-num">2</div>
-        <div class="how-icon"><svg viewBox="0 0 24 24"><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/><circle cx="12" cy="12" r="10"/></svg></div>
-        <div class="how-title">Train your AI</div>
-        <div class="how-body">Add FAQs, product info, or let KiwKiw learn from past chats.</div>
-      </div>
-      <div class="how-card">
-        <div class="how-num">3</div>
-        <div class="how-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-        <div class="how-title">Go live instantly</div>
-        <div class="how-body">KiwKiw starts replying to customers automatically.</div>
-      </div>
-    </div>
-    <div class="how-cta">
-      <a href="https://portal.kiwkiw-parrot.com/en/auth" class="btn btn-primary btn-xl">
-        Connect My Messenger
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
-  </div>
-</div>
-
-
-<!-- FAQ -->
-<div class="faq-section">
-  <div class="faq-inner">
-    <div class="faq-header">
-      <div class="section-eyebrow">FAQ</div>
-      <h2 class="faq-h2">Frequently asked questions.</h2>
-    </div>
-    <div class="faq-list">
-      <div class="faq-item open">
-        <button class="faq-btn" onclick="toggleFaq(this)">
-          Is it hard to set up?
-          <svg class="faq-icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </button>
-        <div class="faq-answer">Not at all. Connect your Messenger and start automating in a few minutes — no code required.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-btn" onclick="toggleFaq(this)">
-          Will the AI answer correctly?
-          <svg class="faq-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </button>
-        <div class="faq-answer">Yes. You control the knowledge it uses, approve its replies during training, and can update responses anytime.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-btn" onclick="toggleFaq(this)">
-          Is it expensive?
-          <svg class="faq-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </button>
-        <div class="faq-answer">KiwKiw is built for SMEs. Plans start low and scale with message volume, not headcount.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-btn" onclick="toggleFaq(this)">
-          Will it replace my team?
-          <svg class="faq-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </button>
-        <div class="faq-answer">No. It supports your team by handling repetitive questions so they can focus on high-value conversations.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-btn" onclick="toggleFaq(this)">
-          Is my data secure?
-          <svg class="faq-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </button>
-        <div class="faq-answer">Yes. We use encryption in transit and at rest, store Meta credentials securely, and never train on your data outside your tenant.</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- FINAL CTA -->
-<div class="cta-section">
-  <img class="bg-logo" src="/assets/logo.png" alt="" />
-  <div class="cta-inner">
-    <h2 class="cta-h2">Start automating your customer conversations today.</h2>
-    <p class="cta-sub">Join hundreds of businesses using KiwKiw to respond faster and sell more.</p>
-    <div class="cta-btns">
-      <a href="https://portal.kiwkiw-parrot.com/en/auth" class="btn btn-secondary btn-xl">
-        Automate My Messages Now
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
-    <div class="cta-fine">Free trial · No technical setup required · Cancel anytime</div>
-  </div>
-</div>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-grid">
-    <div>
-      <div class="footer-brand">
-        <img src="/assets/logo.png" alt="KiwKiw" />
-        <span>KiwKiw</span>
-      </div>
-      <p class="footer-desc">AI-powered Messenger automation for SMEs and agencies across Southeast Asia.</p>
-    </div>
-    <div>
-      <div class="footer-col-h">Product</div>
-      <a href="#" class="footer-link">Features</a>
-      <a href="#" class="footer-link">Pricing</a>
-      <a href="#" class="footer-link">Changelog</a>
-    </div>
-    <div>
-      <div class="footer-col-h">Company</div>
-      <a href="#" class="footer-link">About</a>
-      <a href="#" class="footer-link">Contact</a>
-      <a href="#" class="footer-link">Careers</a>
-    </div>
-    <div>
-      <div class="footer-col-h">Legal</div>
-      <a href="https://portal.kiwkiw-parrot.com/en/privacy-policy" class="footer-link">Privacy Policy</a>
-      <a href="https://portal.kiwkiw-parrot.com/en/terms-of-service" class="footer-link">Terms of Service</a>
-      <a href="https://portal.kiwkiw-parrot.com/en/data-deletion" class="footer-link">Data Deletion</a>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span>© 2026 KiwKiw. Operated by Reddus Experience Sole Co., Ltd.</span>
-    <a href="https://portal.kiwkiw-parrot.com/en/auth" class="footer-link">Log in</a>
-  </div>
-</footer>
-
-<style>
-/* ── Streaming animation ── */
 .bubble-caret {
   display: inline-block; width: 2px; height: 1em;
   background: #fff; vertical-align: -2px; margin-left: 1px;
@@ -691,13 +737,10 @@ footer {
 }
 @keyframes cur-blink { 50% { opacity: 0; } }
 
-.thinking-dots {
-  display: inline-flex; gap: 3px; align-items: center;
-  padding: 2px 0;
-}
+.thinking-dots { display: inline-flex; gap: 3px; align-items: center; padding: 3px 0; }
 .thinking-dots i {
   width: 5px; height: 5px; border-radius: 50%;
-  background: rgba(255,255,255,.6);
+  background: rgba(255,255,255,.65);
   display: inline-block;
   animation: dot-bob 1s infinite ease-in-out;
 }
@@ -707,21 +750,333 @@ footer {
   0%,80%,100% { opacity: .3; transform: translateY(0); }
   40%          { opacity: 1;  transform: translateY(-3px); }
 }
-
-.bubble-fade-in {
-  animation: bubble-appear .2s ease forwards;
-}
+.bubble-fade-in { animation: bubble-appear .25s var(--ease-out) forwards; }
 @keyframes bubble-appear {
-  from { opacity: 0; transform: translateY(4px); }
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* ──────────────────────────────────────────
+   REDUCED MOTION
+────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  .ticker-track { animation: none; }
+  .js [data-reveal] { opacity: 1; transform: none; }
+}
 </style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="/" aria-label="KiwKiw home">
+      <img src="/assets/logo.png" alt="" width="34" height="34" />
+      <span>KiwKiw</span>
+    </a>
+    <nav class="nav-actions" aria-label="Account">
+      <a href="https://portal.kiwkiw-parrot.com/en/auth" class="nav-login">Log in</a>
+      <a href="https://portal.kiwkiw-parrot.com/en/auth" class="btn btn-primary btn-sm">Get started</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-badge" data-rise style="--i:0">
+        <span class="dot" aria-hidden="true"></span>
+        AI for Messenger — always on
+      </div>
+      <h1 data-rise style="--i:1">Never miss a customer <span class="accent">message</span> again.</h1>
+      <p class="hero-sub" data-rise style="--i:2">KiwKiw replies to your Facebook messages in under 2 seconds with AI trained on your business. Close more sales, scale support, and hire zero new staff.</p>
+      <div class="hero-ctas" data-rise style="--i:3">
+        <a href="https://portal.kiwkiw-parrot.com/en/auth" class="btn btn-primary btn-xl">
+          Automate My Messages
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <p class="hero-fine" data-rise style="--i:4">Free trial · 5-minute setup · No coding</p>
+
+      <div class="ticker-wrap" data-rise style="--i:5">
+        <div class="ticker-label"><span class="dot" aria-hidden="true"></span> Replies happening right now</div>
+        <div class="ticker" aria-hidden="true">
+          <div class="ticker-track">
+            <span class="chip"><b>Maya</b> · price question <span class="t">1.2s</span></span>
+            <span class="chip"><b>Tom</b> · opening hours <span class="t">0.9s</span></span>
+            <span class="chip"><b>Sua</b> · returns policy <span class="t">1.5s</span></span>
+            <span class="chip"><b>Anong</b> · booking request <span class="t">1.4s</span></span>
+            <span class="chip"><b>Ken</b> · delivery time <span class="t">1.0s</span></span>
+            <span class="chip"><b>Noi</b> · size availability <span class="t">1.1s</span></span>
+            <span class="chip"><b>Maya</b> · price question <span class="t">1.2s</span></span>
+            <span class="chip"><b>Tom</b> · opening hours <span class="t">0.9s</span></span>
+            <span class="chip"><b>Sua</b> · returns policy <span class="t">1.5s</span></span>
+            <span class="chip"><b>Anong</b> · booking request <span class="t">1.4s</span></span>
+            <span class="chip"><b>Ken</b> · delivery time <span class="t">1.0s</span></span>
+            <span class="chip"><b>Noi</b> · size availability <span class="t">1.1s</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="phone">
+        <div class="messenger-header">
+          <div class="messenger-avatar"><img src="/assets/logo.png" alt="" /></div>
+          <div>
+            <div class="messenger-name">Lina's Boutique</div>
+            <div class="messenger-status">Active now</div>
+          </div>
+        </div>
+        <div class="messenger-body" id="messenger-body"></div>
+      </div>
+      <div class="speed-flag" aria-hidden="true">
+        <span class="num">&lt;2s</span> average reply
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem">
+  <div class="container problem-grid">
+    <div data-reveal>
+      <h2>Customer messages are <span class="hl">costing you sales.</span></h2>
+      <p class="problem-lead">A customer who messages you is ready to buy. Every hour they wait, the odds they buy from someone else go up.</p>
+      <div class="pain-list">
+        <div class="pain" data-reveal style="--i:1">
+          <span class="pain-when">All day</span>
+          <span class="pain-text"><b>You reply too late.</b> Customers don't wait — they message three competitors at once.</span>
+        </div>
+        <div class="pain" data-reveal style="--i:2">
+          <span class="pain-when">Every day</span>
+          <span class="pain-text"><b>Your team repeats answers.</b> Price, sizing, hours, shipping — the same questions, over and over.</span>
+        </div>
+        <div class="pain" data-reveal style="--i:3">
+          <span class="pain-when">10pm–8am</span>
+          <span class="pain-text"><b>You miss messages at night.</b> Leads go cold while you sleep. SEA sleeps; Messenger doesn't.</span>
+        </div>
+        <div class="pain" data-reveal style="--i:4">
+          <span class="pain-when">Each month</span>
+          <span class="pain-text"><b>Scaling means hiring.</b> More volume means more agents. Payroll climbs faster than margin.</span>
+        </div>
+      </div>
+      <p class="problem-quote" data-reveal style="--i:5">Every missed message is a lost opportunity.</p>
+    </div>
+
+    <div data-reveal="right">
+      <div class="dead-chat" role="img" aria-label="Example of a sale lost to a slow reply: a customer asks about a dress at night, the shop answers the next morning, and the customer has already bought elsewhere.">
+        <div class="dead-head"><b>Without KiwKiw</b><span>Last night</span></div>
+        <div class="dead-body">
+          <div class="dead-stamp">10:02 PM</div>
+          <div class="bubble bubble-in">Hi! How much is the blue linen dress? Is it available in M?</div>
+          <div class="dead-stamp late">Seen 10 hours later</div>
+          <div class="dead-stamp">8:47 AM</div>
+          <div class="bubble bubble-out">Hi! Yes we have M, it's 350,000 kip 😊</div>
+          <div class="bubble bubble-in">Thanks, but I already ordered from another shop last night.</div>
+        </div>
+        <div class="dead-foot">One slow reply. One lost sale.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION + BENEFITS -->
+<section class="solution">
+  <img class="bg-logo" src="/assets/logo.png" alt="" />
+  <div class="container">
+    <div class="solution-head" data-reveal>
+      <h2>Meet KiwKiw — your AI assistant that <span class="accent">never sleeps.</span></h2>
+      <p class="solution-lead">KiwKiw automatically replies to your customer messages using AI trained on your business. It answers FAQs, handles inquiries, and turns conversations into sales — 24/7.</p>
+      <div class="solution-pills">
+        <span class="pill"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>No coding</span>
+        <span class="pill"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>No complex setup</span>
+        <span class="pill"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Live on your page in under 5 minutes</span>
+      </div>
+    </div>
+
+    <div class="bento">
+      <div class="b-card b-wide" data-reveal style="--i:0">
+        <div class="b-live">
+          <span class="badge"><span class="dot" aria-hidden="true"></span> Online · replying</span>
+          <span class="hours">3:12 AM — your shop is closed, your bot isn't</span>
+        </div>
+        <div class="b-kicker">Reply <span class="accent-green">instantly</span>, 24/7.</div>
+        <p class="b-body">Your customers get answers in seconds — even when you're asleep, on holiday, or busy with the customer in front of you.</p>
+      </div>
+      <div class="b-card" data-reveal style="--i:1">
+        <div class="b-kicker"><span class="accent-teal">Convert</span> more leads.</div>
+        <p class="b-body">Respond faster than any competitor and never miss a potential buyer again.</p>
+      </div>
+      <div class="b-card" data-reveal style="--i:2">
+        <div class="b-kicker">Less <span class="accent-orange">repetitive</span> work.</div>
+        <p class="b-body">Let AI handle the same daily questions so your team focuses on conversations that need a human.</p>
+      </div>
+      <div class="b-card b-wide" data-reveal style="--i:3">
+        <div class="b-kicker">Scale without <span class="accent-green">hiring.</span></div>
+        <p class="b-body">Handle ten times the conversations without increasing headcount. Your payroll stays flat while your reply volume doesn't.</p>
+      </div>
+    </div>
+
+    <div class="solution-cta" data-reveal>
+      <a href="https://portal.kiwkiw-parrot.com/en/auth" class="btn btn-primary btn-lg">
+        Automate My Messages
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="container">
+    <div class="how-head" data-reveal>
+      <h2>Get started in minutes.</h2>
+      <p>Three steps between you and an inbox that answers itself.</p>
+    </div>
+    <div class="steps" data-watch>
+      <div class="fill" aria-hidden="true"></div>
+      <div class="step" data-reveal style="--i:0">
+        <div class="step-num" aria-hidden="true"></div>
+        <div>
+          <h3 class="step-title">Connect your Messenger</h3>
+          <p class="step-body">Link your Facebook page in one click via Meta OAuth. No passwords shared, no code pasted.</p>
+        </div>
+      </div>
+      <div class="step" data-reveal style="--i:1">
+        <div class="step-num" aria-hidden="true"></div>
+        <div>
+          <h3 class="step-title">Train your AI</h3>
+          <p class="step-body">Add FAQs, product info, and policies — or let KiwKiw learn from your past conversations.</p>
+        </div>
+      </div>
+      <div class="step" data-reveal style="--i:2">
+        <div class="step-num" aria-hidden="true"></div>
+        <div>
+          <h3 class="step-title">Go live instantly</h3>
+          <p class="step-body">KiwKiw starts replying to customers automatically — in their language, with your knowledge.</p>
+        </div>
+      </div>
+    </div>
+    <div class="how-cta" data-reveal>
+      <a href="https://portal.kiwkiw-parrot.com/en/auth" class="btn btn-primary btn-xl">
+        Connect My Messenger
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="container faq-inner">
+    <h2 data-reveal>Frequently asked questions.</h2>
+    <div class="faq-list">
+      <div class="faq-item open" data-reveal style="--i:0">
+        <button class="faq-btn" aria-expanded="true" onclick="toggleFaq(this)">
+          Is it hard to set up?
+          <svg class="faq-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-panel"><div class="faq-answer"><p>Not at all. Connect your Messenger and start automating in a few minutes — no code required.</p></div></div>
+      </div>
+      <div class="faq-item" data-reveal style="--i:1">
+        <button class="faq-btn" aria-expanded="false" onclick="toggleFaq(this)">
+          Will the AI answer correctly?
+          <svg class="faq-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-panel"><div class="faq-answer"><p>Yes. You control the knowledge it uses, approve its replies during training, and can update responses anytime. If a customer asks something outside its knowledge, it says it will check — it doesn't make things up.</p></div></div>
+      </div>
+      <div class="faq-item" data-reveal style="--i:2">
+        <button class="faq-btn" aria-expanded="false" onclick="toggleFaq(this)">
+          Is it expensive?
+          <svg class="faq-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-panel"><div class="faq-answer"><p>KiwKiw is built for SMEs. Plans start low and scale with message volume, not headcount.</p></div></div>
+      </div>
+      <div class="faq-item" data-reveal style="--i:3">
+        <button class="faq-btn" aria-expanded="false" onclick="toggleFaq(this)">
+          Will it replace my team?
+          <svg class="faq-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-panel"><div class="faq-answer"><p>No. It supports your team by handling repetitive questions so they can focus on high-value conversations. Your team can read every chat and step in any time.</p></div></div>
+      </div>
+      <div class="faq-item" data-reveal style="--i:4">
+        <button class="faq-btn" aria-expanded="false" onclick="toggleFaq(this)">
+          Is my data secure?
+          <svg class="faq-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="faq-panel"><div class="faq-answer"><p>Yes. We use encryption in transit and at rest, store Meta credentials securely, and never train on your data outside your tenant. Every business on the platform is fully separated.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta">
+  <img class="bg-logo" src="/assets/logo.png" alt="" />
+  <div class="container cta-inner" data-reveal>
+    <h2>Start automating your customer conversations today.</h2>
+    <p class="cta-sub">Join the businesses using KiwKiw to respond faster, sell more, and finally get their evenings back.</p>
+    <div class="cta-btns">
+      <a href="https://portal.kiwkiw-parrot.com/en/auth" class="btn btn-primary btn-xl">
+        Automate My Messages Now
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+    <p class="cta-fine">Free trial · No technical setup required · Cancel anytime</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <img src="/assets/logo.png" alt="KiwKiw" />
+          <span>KiwKiw</span>
+        </div>
+        <p class="footer-desc">AI-powered Messenger automation for SMEs and agencies across Southeast Asia.</p>
+      </div>
+      <div>
+        <div class="footer-col-h">Product</div>
+        <a href="#" class="footer-link">Features</a>
+        <a href="#" class="footer-link">Pricing</a>
+        <a href="#" class="footer-link">Changelog</a>
+      </div>
+      <div>
+        <div class="footer-col-h">Company</div>
+        <a href="#" class="footer-link">About</a>
+        <a href="#" class="footer-link">Contact</a>
+        <a href="#" class="footer-link">Careers</a>
+      </div>
+      <div>
+        <div class="footer-col-h">Legal</div>
+        <a href="https://portal.kiwkiw-parrot.com/en/privacy-policy" class="footer-link">Privacy Policy</a>
+        <a href="https://portal.kiwkiw-parrot.com/en/terms-of-service" class="footer-link">Terms of Service</a>
+        <a href="https://portal.kiwkiw-parrot.com/en/data-deletion" class="footer-link">Data Deletion</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 KiwKiw. Operated by Reddus Experience Sole Co., Ltd.</span>
+      <a href="https://portal.kiwkiw-parrot.com/en/auth" class="footer-link">Log in</a>
+    </div>
+  </div>
+</footer>
 
 <script>
 /* ── Messenger streaming loop ── */
 (function () {
   const body = document.getElementById('messenger-body');
   if (!body) return;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const conversations = [
     {
@@ -742,16 +1097,16 @@ footer {
     },
   ];
 
-  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+  function sleep(ms) { return new Promise(r => setTimeout(r, reduced ? Math.min(ms, 40) : ms)); }
 
-  function makeBubble(cls, extra) {
+  function makeBubble(cls) {
     const d = document.createElement('div');
     d.className = 'bubble ' + cls + ' bubble-fade-in';
-    if (extra) Object.assign(d.style, extra);
     return d;
   }
 
   async function typewrite(el, text, speed = 22) {
+    if (reduced) { el.textContent = text; return; }
     const span = document.createElement('span');
     const caret = document.createElement('span');
     caret.className = 'bubble-caret';
@@ -769,6 +1124,7 @@ footer {
   }
 
   async function showThinking(el) {
+    if (reduced) return;
     const dots = document.createElement('span');
     dots.className = 'thinking-dots';
     dots.innerHTML = '<i></i><i></i><i></i>';
@@ -777,72 +1133,72 @@ footer {
     dots.remove();
   }
 
+  async function turn(userText, botText, metaText) {
+    const u = makeBubble('bubble-in');
+    u.textContent = userText;
+    body.appendChild(u);
+    body.scrollTop = body.scrollHeight;
+    await sleep(600);
+
+    const b = makeBubble('bubble-out');
+    body.appendChild(b);
+    body.scrollTop = body.scrollHeight;
+    await showThinking(b);
+    await typewrite(b, botText);
+    const m = document.createElement('div');
+    m.className = 'bubble-meta';
+    m.textContent = metaText;
+    b.appendChild(m);
+    body.scrollTop = body.scrollHeight;
+  }
+
   async function runConversation(conv) {
     body.innerHTML = '';
-
-    // Turn 1 — user message
-    const u1 = makeBubble('bubble-in');
-    u1.textContent = conv.user1;
-    body.appendChild(u1);
-    await sleep(600);
-
-    // Turn 1 — AI thinking + stream
-    const b1 = makeBubble('bubble-out');
-    body.appendChild(b1);
-    await showThinking(b1);
-    await typewrite(b1, conv.bot1);
-    const m1 = document.createElement('div');
-    m1.className = 'bubble-meta';
-    m1.textContent = conv.meta1;
-    b1.appendChild(m1);
+    await turn(conv.user1, conv.bot1, conv.meta1);
     await sleep(1000);
-
-    // Turn 2 — user message
-    const u2 = makeBubble('bubble-in', { maxWidth: '70%' });
-    u2.textContent = conv.user2;
-    body.appendChild(u2);
-    body.scrollTop = body.scrollHeight;
-    await sleep(600);
-
-    // Turn 2 — AI thinking + stream
-    const b2 = makeBubble('bubble-out');
-    body.appendChild(b2);
-    body.scrollTop = body.scrollHeight;
-    await showThinking(b2);
-    await typewrite(b2, conv.bot2);
-    const m2 = document.createElement('div');
-    m2.className = 'bubble-meta';
-    m2.textContent = conv.meta2;
-    b2.appendChild(m2);
-
+    await turn(conv.user2, conv.bot2, conv.meta2);
     await sleep(2800);
   }
 
-  async function loop() {
+  (async function loop() {
     let i = 0;
     while (true) {
       await runConversation(conversations[i % conversations.length]);
       i++;
     }
-  }
-
-  loop();
+  })();
 })();
-</script>
 
-<script>
+/* ── Scroll reveals ── */
+(function () {
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('[data-reveal]').forEach(el => el.classList.add('in-view'));
+    document.querySelectorAll('[data-watch]').forEach(el => el.classList.add('in-view'));
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) {
+        e.target.classList.add('in-view');
+        io.unobserve(e.target);
+      }
+    }
+  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.05 });
+
+  document.querySelectorAll('[data-reveal], [data-watch]').forEach(el => io.observe(el));
+})();
+
+/* ── FAQ accordion ── */
 function toggleFaq(btn) {
   const item = btn.closest('.faq-item');
   const isOpen = item.classList.contains('open');
-  // close all
-  document.querySelectorAll('.faq-item').forEach(el => {
+  document.querySelectorAll('.faq-item.open').forEach(el => {
     el.classList.remove('open');
-    el.querySelector('.faq-icon').innerHTML = '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>';
+    el.querySelector('.faq-btn').setAttribute('aria-expanded', 'false');
   });
-  // open clicked if it was closed
   if (!isOpen) {
     item.classList.add('open');
-    btn.querySelector('.faq-icon').innerHTML = '<line x1="5" y1="12" x2="19" y2="12"/>';
+    btn.setAttribute('aria-expanded', 'true');
   }
 }
 </script>
