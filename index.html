@@ -1260,7 +1260,6 @@ html, body { margin: 0; padding: 0; background: #FFFFFF; }
     initBilling();
     var lb=document.querySelector('[data-lang-btn]');
     if(lb) lb.addEventListener('click', function(){ setLang(!state.lo); });
-    window.addEventListener('scroll', initReveals, {passive:true});
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
   else init();
